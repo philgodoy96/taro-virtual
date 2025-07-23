@@ -42,7 +42,7 @@ export default function App() {
   const consultarTarologo = async () => {
     setCarregando(true);
     try {
-      const response = await fetch("https://taro-backend-2k9m.onrender.com", {
+      const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
