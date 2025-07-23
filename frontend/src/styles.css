@@ -39,19 +39,19 @@ h1, h2, h3 {
   font-size: 1.1rem;
 }
 
-/* Input da pergunta */
+/* Input da pergunta (estilo textarea) */
 input[type="text"] {
   width: 100%;
-  padding: 1rem;
+  padding: 1.2rem;
   font-size: 1.1rem;
   border-radius: 10px;
   border: none;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   background-color: #2d1d4a;
   color: #fff;
   outline: none;
   box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.4);
-  min-height: 60px;
+  min-height: 80px;
 }
 
 /* Botões */
@@ -67,7 +67,6 @@ button {
   margin: 0.5rem;
   font-weight: bold;
 }
-
 button:hover {
   background-color: #9f6aff;
   box-shadow: 0 0 12px #d0a7ff;
@@ -136,7 +135,7 @@ button:hover {
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1.5rem;
   border-radius: 15px;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   box-shadow: 0 0 20px rgba(150, 100, 255, 0.15);
   max-width: 800px;
   width: 100%;
@@ -146,19 +145,26 @@ button:hover {
   white-space: pre-line;
 }
 
+.resposta h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff3ff;
+  text-align: center;
+}
+
 .resposta p {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.3rem;
   line-height: 1.85;
   color: #f6f0ff;
   text-align: justify;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-/* Botão de interpretar leitura */
+/* Botão de interpretar leitura — centralizado */
 button.interpretar-btn {
   display: block;
-  margin: 2rem auto 1rem auto;
+  margin: 1.5rem auto 1rem auto;
   text-align: center;
 }
 
@@ -175,9 +181,9 @@ button.interpretar-btn {
   }
 
   input[type="text"] {
-    width: 100%;
+    padding: 1rem;
     font-size: 1.05rem;
-    padding: 1.2rem;
+    min-height: 70px;
   }
 
   .resposta {
@@ -193,12 +199,16 @@ button.interpretar-btn {
     line-height: 1.75;
   }
 
-  .deck {
-    margin: 1.5rem auto;
+  .resposta h3 {
+    font-size: 1.35rem;
   }
 
   button {
     font-size: 1rem;
+  }
+
+  button.interpretar-btn {
+    margin-top: 1.25rem;
   }
 }
 
