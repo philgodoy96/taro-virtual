@@ -32,7 +32,7 @@ h1 {
   color: #e3d0ff;
   font-size: 2.2rem;
   margin-bottom: 1rem;
-  text-align: center;
+  text-align: left;
 }
 
 h2 {
@@ -40,7 +40,7 @@ h2 {
   color: #e3d0ff;
   font-size: 1.8rem;
   margin-bottom: 1rem;
-  text-align: center;
+  text-align: left;
 }
 
 h3 {
@@ -48,7 +48,7 @@ h3 {
   color: #e3d0ff;
   font-size: 1.4rem;
   margin-bottom: 1rem;
-  text-align: center;
+  text-align: left;
 }
 
 /* Parágrafos e labels */
@@ -61,7 +61,8 @@ h3 {
 .pergunta-textarea {
   width: 100%;
   padding: 1.2rem;
-  font-size: 1.05rem;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
   border-radius: 10px;
   border: none;
   margin-bottom: 1.25rem;
@@ -74,6 +75,7 @@ h3 {
   line-height: 1.6;
 }
 
+/* Placeholder elegante */
 .pergunta-textarea::placeholder {
   font-family: 'Georgia', serif;
   font-size: 0.95rem;
@@ -186,7 +188,7 @@ button.interpretar-btn {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: #fff3ff;
-  text-align: center;
+  text-align: left;
 }
 
 .resposta p {
