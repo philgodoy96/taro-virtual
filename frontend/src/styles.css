@@ -240,12 +240,11 @@ button.interpretar-btn {
     line-height: 1.6;
   }
 
-  .resposta p {
-    font-size: 1.15rem;
-    text-align: left;
-    word-break: break-word;
-    line-height: 1.75;
-  }
+ .resposta p {
+  font-family: 'Lora', serif;
+  font-size: 1.25rem;
+  line-height: 1.7;
+}
 
   .resposta h3 {
     font-size: 1.35rem;
