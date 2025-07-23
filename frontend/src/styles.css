@@ -39,8 +39,8 @@ h1, h2, h3 {
   font-size: 1.1rem;
 }
 
-/* Input da pergunta (estilo textarea) */
-input[type="text"] {
+/* Textarea para pergunta */
+.pergunta-textarea {
   width: 100%;
   padding: 1.2rem;
   font-size: 1.1rem;
@@ -50,8 +50,10 @@ input[type="text"] {
   background-color: #2d1d4a;
   color: #fff;
   outline: none;
+  resize: vertical;
   box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.4);
-  min-height: 80px;
+  min-height: 120px;
+  line-height: 1.6;
 }
 
 /* Botões */
@@ -67,6 +69,7 @@ button {
   margin: 0.5rem;
   font-weight: bold;
 }
+
 button:hover {
   background-color: #9f6aff;
   box-shadow: 0 0 12px #d0a7ff;
@@ -78,6 +81,13 @@ button:hover {
 }
 .tarologo-selector button:hover {
   background-color: #8e63f3;
+}
+
+/* Botão de interpretar leitura */
+button.interpretar-btn {
+  display: block;
+  margin: 1.5rem auto 1rem auto;
+  text-align: center;
 }
 
 /* Deck (puxar carta) */
@@ -108,6 +118,7 @@ button:hover {
   font-size: 2rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .deck:hover .card-back {
   transform: scale(1.05);
   box-shadow: 0 0 25px rgba(198, 145, 255, 0.7);
@@ -121,6 +132,7 @@ button:hover {
   justify-content: center;
   margin-top: 1rem;
 }
+
 .revealed-card {
   background: #2e1e49;
   border: 1px solid #8057c3;
@@ -161,13 +173,6 @@ button:hover {
   margin-bottom: 1rem;
 }
 
-/* Botão de interpretar leitura — centralizado */
-button.interpretar-btn {
-  display: block;
-  margin: 1.5rem auto 1rem auto;
-  text-align: center;
-}
-
 /* Mobile improvements */
 @media (max-width: 768px) {
   body {
@@ -180,10 +185,10 @@ button.interpretar-btn {
     border-radius: 12px;
   }
 
-  input[type="text"] {
-    padding: 1rem;
+  .pergunta-textarea {
     font-size: 1.05rem;
-    min-height: 70px;
+    padding: 1rem;
+    min-height: 100px;
   }
 
   .resposta {

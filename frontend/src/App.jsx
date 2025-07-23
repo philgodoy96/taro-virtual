@@ -97,11 +97,12 @@ export default function App() {
         <h2>{tarologo.toUpperCase()}</h2>
         <h3>{etapaAtual?.titulo || "Início"}</h3>
         <p>Faça sua pergunta para esta etapa:</p>
-        <input
-          type="text"
+        <textarea
+          className="pergunta-textarea"
           value={pergunta}
           onChange={(e) => setPergunta(e.target.value)}
-          placeholder="Digite sua pergunta"
+          placeholder="Digite sua pergunta com contexto..."
+          rows={5}
         />
         <button
           onClick={() => {
@@ -149,7 +150,7 @@ export default function App() {
       </div>
 
       {cartas.length === etapaAtual.cartas && !resposta && (
-        <button onClick={consultarTarologo} disabled={carregando}>
+        <button className="interpretar-btn" onClick={consultarTarologo} disabled={carregando}>
           {carregando ? "Consultando..." : "Interpretar Leitura"}
         </button>
       )}
