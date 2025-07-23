@@ -11,6 +11,7 @@ body {
   color: #f0e9ff;
   min-height: 100vh;
   padding: 2rem;
+  font-size: 1.1rem;
 }
 
 /* Container central */
@@ -41,21 +42,22 @@ h1, h2, h3 {
 /* Input da pergunta */
 input[type="text"] {
   width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
+  padding: 1rem;
+  font-size: 1.1rem;
   border-radius: 10px;
   border: none;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   background-color: #2d1d4a;
   color: #fff;
   outline: none;
   box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.4);
+  min-height: 60px;
 }
 
 /* Botões */
 button {
   padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  font-size: 1.05rem;
   border-radius: 12px;
   background-color: #7e4fe7;
   color: #fff;
@@ -65,6 +67,7 @@ button {
   margin: 0.5rem;
   font-weight: bold;
 }
+
 button:hover {
   background-color: #9f6aff;
   box-shadow: 0 0 12px #d0a7ff;
@@ -87,6 +90,13 @@ button:hover {
   flex-direction: column;
   align-items: center;
 }
+
+.deck p {
+  margin-top: 1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
 .card-back {
   width: 80px;
   height: 120px;
@@ -138,17 +148,25 @@ button:hover {
 
 .resposta p {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.25rem;
-  line-height: 1.8;
+  font-size: 1.3rem;
+  line-height: 1.85;
   color: #f6f0ff;
   text-align: justify;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Mobile adjustments */
+/* Botão de interpretar leitura */
+button.interpretar-btn {
+  display: block;
+  margin: 2rem auto 1rem auto;
+  text-align: center;
+}
+
+/* Mobile improvements */
 @media (max-width: 768px) {
   body {
     padding: 1rem;
+    font-size: 1rem;
   }
 
   .container {
@@ -159,22 +177,28 @@ button:hover {
   input[type="text"] {
     width: 100%;
     font-size: 1.05rem;
+    padding: 1.2rem;
   }
 
   .resposta {
-    padding: 1rem;
-    font-size: 1rem;
+    padding: 1.2rem;
+    font-size: 1.05rem;
     line-height: 1.6;
   }
 
   .resposta p {
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     text-align: left;
     word-break: break-word;
+    line-height: 1.75;
   }
 
   .deck {
     margin: 1.5rem auto;
+  }
+
+  button {
+    font-size: 1rem;
   }
 }
 
