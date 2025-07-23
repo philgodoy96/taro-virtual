@@ -51,6 +51,12 @@ h3 {
   text-align: left;
 }
 
+/* Etapa centralizada */
+.etapa-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
 /* Parágrafos e labels */
 .container p {
   margin-bottom: 1.25rem;
@@ -75,7 +81,6 @@ h3 {
   line-height: 1.6;
 }
 
-/* Placeholder elegante */
 .pergunta-textarea::placeholder {
   font-family: 'Georgia', serif;
   font-size: 0.95rem;
@@ -233,11 +238,6 @@ button.interpretar-btn {
   .pergunta-textarea::placeholder {
     font-size: 0.9rem;
   }
-
-  .etapa-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
 
   .resposta {
     padding: 1.2rem;
