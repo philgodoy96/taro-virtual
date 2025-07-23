@@ -43,6 +43,16 @@ h2 {
   text-align: left;
 }
 
+.etapa-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.etapa-header h2,
+.etapa-header p {
+  text-align: center;
+}
+
 h3 {
   font-family: 'Cinzel Decorative', cursive;
   color: #e3d0ff;
@@ -246,10 +256,10 @@ button.interpretar-btn {
   }
 
   .resposta p {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     text-align: left;
     word-break: break-word;
-    line-height: 1.75;
+    line-height: 1.5;
   }
 
   .resposta h3 {
