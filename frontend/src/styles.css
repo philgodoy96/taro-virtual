@@ -234,17 +234,23 @@ button.interpretar-btn {
     font-size: 0.9rem;
   }
 
+  .etapa-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
   .resposta {
     padding: 1.2rem;
     font-size: 1.05rem;
     line-height: 1.6;
   }
 
- .resposta p {
-  font-family: 'Lora', serif;
-  font-size: 1.25rem;
-  line-height: 1.7;
-}
+  .resposta p {
+    font-size: 1.2rem;
+    text-align: left;
+    word-break: break-word;
+    line-height: 1.75;
+  }
 
   .resposta h3 {
     font-size: 1.35rem;

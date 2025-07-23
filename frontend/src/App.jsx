@@ -131,8 +131,10 @@ export default function App() {
   // Etapas de leitura
   return (
     <div className="container">
-      <h2>{etapaAtual.titulo}</h2>
-      <p>Cartas selecionadas: {cartas.length} / {etapaAtual.cartas}</p>
+      <div className="etapa-header">
+        <h2>{etapaAtual.titulo}</h2>
+        <p>Cartas selecionadas: {cartas.length} / {etapaAtual.cartas}</p>
+      </div>
 
       {cartas.length < etapaAtual.cartas && (
         <div className="deck" onClick={puxarCarta}>
