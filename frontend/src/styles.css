@@ -122,6 +122,12 @@ button:hover {
   border-radius: 15px;
   margin-top: 2rem;
   box-shadow: 0 0 20px rgba(150, 100, 255, 0.15);
+  max-width: 800px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 .resposta p {
@@ -130,8 +136,20 @@ button:hover {
   line-height: 1.8;
   color: #f6f0ff;
   text-align: justify;
-  text-shadow: 0 0 4px rgba(198, 145, 255, 0.1);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 480px) {
+  .resposta {
+    padding: 1.2rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .resposta p {
+    text-align: left;
+    word-break: break-word;
+  }
 }
 
 /* Animação sutil do deck */
