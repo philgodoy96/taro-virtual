@@ -41,7 +41,7 @@ export default function App() {
   const [perguntaConfirmada, setPerguntaConfirmada] = useState(false);
   const [perguntasPorEtapa, setPerguntasPorEtapa] = useState({});
 
-  useEffect(() => {
+  /*useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
     if (user) {
       if (!user.emailVerified) {
@@ -56,7 +56,8 @@ export default function App() {
 
       if (snap.exists()) {
         const dados = snap.data();
-        setPagamento(dados.pagamento);
+        //setPagamento(dados.pagamento);
+        setPagamento(true); // ⚠️ força o pagamento como feito
 
         if (dados.pagamento) {
           const consultaRef = doc(db, "consultas", user.uid);
@@ -79,7 +80,15 @@ export default function App() {
     }
   });
   return () => unsubscribe();
+}, []);*/
+
+useEffect(() => {
+  // ⚠️ Simula login automático com pagamento e menu liberado
+  setUsuario({ email: "teste@local.com", uid: "teste123" });
+  setPagamento(true);
+  setMostrarMenuUsuario(true); // <- isso exibe o botão “Consultar o tarô”
 }, []);
+
 
 useEffect(() => {
   if (!pixData) return;
