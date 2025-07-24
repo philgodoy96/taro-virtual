@@ -25,8 +25,7 @@ const etapas = {
 };
 
 export default function App() {
-console.log("🔍 API KEY ATIVA:", auth.app.options.apiKey);
-
+  console.log("🔥 apiKey final:", auth.app.options.apiKey);
   const [usuario, setUsuario] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -154,7 +153,7 @@ const handleRecuperarSenha = async () => {
       body: JSON.stringify({ email: usuario.email, valor: 15 })
     });
     const data = await response.json();
-    setPixData(data);
+    console.log(setPixData(data));
   } catch (err) {
     alert("Erro ao gerar cobrança Pix");
   }
