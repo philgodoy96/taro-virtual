@@ -149,8 +149,8 @@ def consultar_taro(data: ConsultaRequest, email: str = Depends(verify_token)):
     cursor.execute("SELECT pagamento FROM usuarios WHERE email = ?", (email,))
     row = cursor.fetchone()
     conn.close()
-    if not row or not row[0]:
-        raise HTTPException(status_code=403, detail="Usuário não realizou o pagamento")
+    #if not row or not row[0]:
+    #    raise HTTPException(status_code=403, detail="Usuário não realizou o pagamento")
 
     estilo = tarologos.get(data.tarologo, tarologos["clara"])
     descricao_etapa = etapa_nomes.get(data.etapa, "Leitura adicional")
