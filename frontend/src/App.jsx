@@ -1,4 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { auth, db } from "./firebaseConfig";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signOut
+} from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const arcanosMaiores = [/* ... mesmo conteúdo ... */];
 const naipes = ["Copas", "Ouros", "Espadas", "Paus"];
@@ -13,6 +23,7 @@ export default function App() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [pagamento, setPagamento] = useState(false);
 
   const [tarologo, setTarologo] = useState(null);
   const [etapa, setEtapa] = useState("cruz_celta");
@@ -27,47 +38,70 @@ export default function App() {
   const embaralhar = () => [...baralhoCompleto].sort(() => 0.5 - Math.random());
 
   useEffect(() => {
-    const user = localStorage.getItem("usuario");
-    if (user) setUsuario(JSON.parse(user));
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        if (!user.emailVerified) {
+          alert("Por favor, verifique seu e-mail antes de continuar.");
+          await signOut(auth);
+          return;
+        }
+        setUsuario(user);
+        const ref = doc(db, "usuarios", user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          setPagamento(snap.data().pagamento);
+        } else {
+          await setDoc(ref, { email: user.email, pagamento: false });
+          setPagamento(false);
+        }
+      } else {
+        setUsuario(null);
+        setPagamento(false);
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("https://seu-backend.com/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setUsuario(data);
-        localStorage.setItem("usuario", JSON.stringify(data));
-      } else {
-        alert(data.mensagem || "Erro no login");
+      const cred = await signInWithEmailAndPassword(auth, email, senha);
+      if (!cred.user.emailVerified) {
+        alert("Por favor, verifique seu e-mail antes de continuar.");
+        await signOut(auth);
       }
     } catch (err) {
-      alert("Erro de rede no login");
+      alert("Erro no login: " + err.message);
     }
   };
 
   const handleCadastro = async () => {
     try {
-      const response = await fetch("https://seu-backend.com/cadastro", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha })
+      const cred = await createUserWithEmailAndPassword(auth, email, senha);
+      await sendEmailVerification(cred.user);
+      await setDoc(doc(db, "usuarios", cred.user.uid), {
+        email: cred.user.email,
+        pagamento: false,
       });
-      const data = await response.json();
-      if (response.ok) {
-        alert("Cadastro realizado. Agora faça login.");
-        setIsLogin(true);
-      } else {
-        alert(data.mensagem || "Erro no cadastro");
-      }
+      alert("Cadastro realizado. Verifique seu e-mail antes de fazer login.");
+      setIsLogin(true);
     } catch (err) {
-      alert("Erro de rede no cadastro");
+      alert("Erro no cadastro: " + err.message);
     }
   };
+
+  const handleRecuperarSenha = async () => {
+    if (!email) {
+      alert("Digite seu e-mail para redefinir a senha.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Um link de redefinição foi enviado para seu e-mail.");
+    } catch (err) {
+      alert("Erro ao enviar e-mail de redefinição: " + err.message);
+    }
+  };
+}
 
   const puxarCarta = () => {
     if (cartas.length >= etapaAtual.cartas) return;
@@ -80,10 +114,7 @@ export default function App() {
     try {
       const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${usuario?.token}`
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pergunta: perguntasPorEtapa[etapa],
           cartas,
@@ -114,42 +145,39 @@ export default function App() {
     }
   };
 
-  // 🔐 Tela de login/cadastro
- if (!usuario) {
-  return (
-    <div className="container">
-      <h1>Tarô Virtual</h1>
-      <h2>{isLogin ? "Login" : "Cadastro"}</h2>
-
-      <div className="login-form">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={senha}
-          onChange={e => setSenha(e.target.value)}
-        />
-        <button onClick={isLogin ? handleLogin : handleCadastro}>
-          {isLogin ? "Entrar" : "Cadastrar"}
-        </button>
+  if (!usuario) {
+    return (
+      <div className="container">
+        <h1>Tarô Virtual</h1>
+        <h2>{isLogin ? "Login" : "Cadastro"}</h2>
+        <div className="login-form">
+          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+          <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} />
+          <button onClick={isLogin ? handleLogin : handleCadastro}>
+            {isLogin ? "Entrar" : "Cadastrar"}
+          </button>
+        </div>
+        <div className="login-toggle">
+          {isLogin ? "Não tem conta?" : "Já tem conta?"}
+          <button onClick={() => setIsLogin(!isLogin)}>
+            {isLogin ? " Cadastre-se" : " Faça login"}
+          </button>
+        </div>
       </div>
+    );
+  }
 
-      <div className="login-toggle">
-        {isLogin ? "Não tem conta?" : "Já tem conta?"}
-        <button onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? " Cadastre-se" : " Faça login"}
-        </button>
+  if (!pagamento) {
+    return (
+      <div className="container">
+        <h1>Tarô Virtual</h1>
+        <p>Olá, {usuario.email}. Para acessar sua leitura, finalize seu pagamento via Pix.</p>
+        {/* Aqui futuramente entra o QR Code Pix */}
+        <p><i>(Integração com Pix pendente)</i></p>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-  // 🃏 Escolha de tarólogo
   if (!tarologo) {
     return (
       <div className="container">
@@ -164,7 +192,6 @@ export default function App() {
     );
   }
 
-  // ✍️ Pergunta por etapa
   if (!perguntaConfirmada) {
     return (
       <div className="container">
@@ -178,21 +205,18 @@ export default function App() {
           placeholder="Digite sua pergunta com contexto..."
           rows={5}
         />
-        <button
-          onClick={() => {
-            if (pergunta) {
-              setPerguntaConfirmada(true);
-              setPerguntasPorEtapa(prev => ({ ...prev, [etapa]: pergunta }));
-            }
-          }}
-        >
+        <button onClick={() => {
+          if (pergunta) {
+            setPerguntaConfirmada(true);
+            setPerguntasPorEtapa(prev => ({ ...prev, [etapa]: pergunta }));
+          }
+        }}>
           Iniciar leitura
         </button>
       </div>
     );
   }
 
-  // 🔚 Sessão finalizada
   if (!etapaAtual) {
     return (
       <div className="container">
@@ -202,7 +226,6 @@ export default function App() {
     );
   }
 
-  // 🔮 Leitura em andamento
   return (
     <div className="container">
       <div className="etapa-header">
@@ -242,4 +265,3 @@ export default function App() {
       )}
     </div>
   );
-}
