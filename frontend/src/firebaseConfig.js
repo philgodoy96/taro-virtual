@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAh0pLMbO9Pr39EFbgFmYC14qSNaRq18",
+  apiKey: "AIzaSyAh0pLMclBO9Pr39EFbgFmYC14qSNaRqi8",
   authDomain: "taro-app-42eb3.firebaseapp.com",
   projectId: "taro-app-42eb3",
   storageBucket: "taro-app-42eb3.appspot.com",
