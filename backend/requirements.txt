@@ -3,5 +3,3 @@ fastapi
 uvicorn
 langchain
 openai
-pip freeze > requirements.txt
-
