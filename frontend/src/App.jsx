@@ -145,18 +145,19 @@ const handleRecuperarSenha = async () => {
   const embaralhar = () => [...baralhoCompleto].sort(() => 0.5 - Math.random());
 
   const gerarPagamento = async () => {
-    try {
-      const response = await fetch("https://taro-backend-2k9m.onrender.com/criar-pagamento", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: usuario.uid || usuario.email, valor: 15 })
-      });
-      const data = await response.json();
-      setPixData(data);
-    } catch (err) {
-      alert("Erro ao gerar cobrança Pix");
-    }
-  };
+  try {
+    const response = await fetch("https://taro-backend-2k9m.onrender.com/criar-pagamento", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: usuario.email, valor: 15 })
+    });
+    const data = await response.json();
+    setPixData(data);
+  } catch (err) {
+    alert("Erro ao gerar cobrança Pix");
+  }
+};
+
 
   const puxarCarta = async () => {
   if (cartas.length >= etapaAtual.cartas) return;
