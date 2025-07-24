@@ -199,10 +199,10 @@ def criar_pagamento(data: PagamentoRequest):
     try:
         result = response.json()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao processar resposta do Mercado Pago: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao converter resposta: {str(e)}")
 
     if response.status_code != 201:
-        # log detalhado do erro para debug
+        print("❌ Erro do Mercado Pago:", result)
         raise HTTPException(status_code=500, detail=f"Erro do Mercado Pago: {result}")
 
     try:
@@ -210,7 +210,8 @@ def criar_pagamento(data: PagamentoRequest):
         qr_img = result["point_of_interaction"]["transaction_data"]["qr_code_base64"]
         payment_id = result["id"]
     except KeyError:
-        raise HTTPException(status_code=500, detail="Resposta do Mercado Pago incompleta ou inesperada.")
+        print("❌ Resposta incompleta do Mercado Pago:", result)
+        raise HTTPException(status_code=500, detail="Resposta do Mercado Pago incompleta.")
 
     return JSONResponse(status_code=200, content={
         "status": "pendente",
