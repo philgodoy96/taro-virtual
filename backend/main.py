@@ -12,6 +12,7 @@ import os
 from datetime import datetime, timedelta
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
+import uuid
 
 load_dotenv()
 
@@ -182,7 +183,8 @@ def criar_pagamento(data: PagamentoRequest):
     url = "https://api.mercadopago.com/v1/payments"
     headers = {
         "Authorization": f"Bearer {MERCADO_PAGO_TOKEN}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-Idempotency-Key": str(uuid.uuid4())
     }
 
     payload = {
