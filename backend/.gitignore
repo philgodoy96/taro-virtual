@@ -1,0 +1,13 @@
+# Ignorar variáveis de ambiente
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+*.log
+
+# VSCode
+.vscode/
