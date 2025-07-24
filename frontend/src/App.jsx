@@ -10,13 +10,19 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
-const arcanosMaiores = [/* ... mesmo conteúdo ... */];
+const arcanosMaiores = ["O Louco", "O Mago", "A Sacerdotisa", "A Imperatriz", "O Imperador", "O Hierofante", "Os Enamorados", "O Carro", "A Força", "O Eremita", "A Roda da Fortuna", "A Justiça", "O Enforcado", "A Morte", "A Temperança", "O Diabo", "A Torre", "A Estrela", "A Lua", "O Sol", "O Julgamento", "O Mundo"];
 const naipes = ["Copas", "Ouros", "Espadas", "Paus"];
 const faces = ["Ás", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez", "Valete", "Cavaleiro", "Rainha", "Rei"];
 const arcanosMenores = naipes.flatMap(naipe => faces.map(face => `${face} de ${naipe}`));
 const baralhoCompleto = [...arcanosMaiores, ...arcanosMenores];
 
-const etapas = { /* ... mesmo conteúdo ... */ };
+const etapas = {
+  cruz_celta: { titulo: "Cruz Celta", cartas: 11, proxima: "etapa9" },
+  etapa9: { titulo: "Leitura de 9 cartas", cartas: 9, proxima: "etapa7" },
+  etapa7: { titulo: "Leitura de 7 cartas", cartas: 7, proxima: "etapa5" },
+  etapa5: { titulo: "Leitura de 5 cartas", cartas: 5, proxima: "etapa3" },
+  etapa3: { titulo: "Leitura Final de 3 cartas", cartas: 3, proxima: null }
+};
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
@@ -24,7 +30,7 @@ export default function App() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [pagamento, setPagamento] = useState(false);
-
+  const [pixData, setPixData] = useState(null);
   const [tarologo, setTarologo] = useState(null);
   const [etapa, setEtapa] = useState("cruz_celta");
   const [cartas, setCartas] = useState([]);
@@ -34,74 +40,87 @@ export default function App() {
   const [perguntaConfirmada, setPerguntaConfirmada] = useState(false);
   const [perguntasPorEtapa, setPerguntasPorEtapa] = useState({});
 
+  useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      if (!user.emailVerified) {
+        alert("Por favor, verifique seu e-mail antes de continuar.");
+        await signOut(auth);
+        return;
+      }
+      setUsuario(user);
+      const ref = doc(db, "usuarios", user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        setPagamento(snap.data().pagamento);
+      } else {
+        await setDoc(ref, { email: user.email, pagamento: false });
+        setPagamento(false);
+      }
+    } else {
+      setUsuario(null);
+      setPagamento(false);
+    }
+  });
+  return () => unsubscribe();
+}, []);
+
+  const handleLogin = async () => {
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+    if (!cred.user.emailVerified) {
+      alert("Por favor, verifique seu e-mail antes de continuar.");
+      await signOut(auth);
+    }
+  } catch (err) {
+    alert("Erro no login: " + err.message);
+  }
+};
+
+const handleCadastro = async () => {
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, senha);
+    await sendEmailVerification(cred.user);
+    await setDoc(doc(db, "usuarios", cred.user.uid), {
+      email: cred.user.email,
+      pagamento: false,
+    });
+    alert("Cadastro realizado. Verifique seu e-mail antes de fazer login.");
+    setIsLogin(true);
+  } catch (err) {
+    alert("Erro no cadastro: " + err.message);
+  }
+};
+
+const handleRecuperarSenha = async () => {
+  if (!email) {
+    alert("Digite seu e-mail para redefinir a senha.");
+    return;
+  }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Um link de redefinição foi enviado para seu e-mail.");
+  } catch (err) {
+    alert("Erro ao enviar e-mail de redefinição: " + err.message);
+  }
+};
+
   const etapaAtual = etapas[etapa];
   const embaralhar = () => [...baralhoCompleto].sort(() => 0.5 - Math.random());
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        if (!user.emailVerified) {
-          alert("Por favor, verifique seu e-mail antes de continuar.");
-          await signOut(auth);
-          return;
-        }
-        setUsuario(user);
-        const ref = doc(db, "usuarios", user.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setPagamento(snap.data().pagamento);
-        } else {
-          await setDoc(ref, { email: user.email, pagamento: false });
-          setPagamento(false);
-        }
-      } else {
-        setUsuario(null);
-        setPagamento(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogin = async () => {
+  const gerarPagamento = async () => {
     try {
-      const cred = await signInWithEmailAndPassword(auth, email, senha);
-      if (!cred.user.emailVerified) {
-        alert("Por favor, verifique seu e-mail antes de continuar.");
-        await signOut(auth);
-      }
-    } catch (err) {
-      alert("Erro no login: " + err.message);
-    }
-  };
-
-  const handleCadastro = async () => {
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, senha);
-      await sendEmailVerification(cred.user);
-      await setDoc(doc(db, "usuarios", cred.user.uid), {
-        email: cred.user.email,
-        pagamento: false,
+      const response = await fetch("https://taro-backend-2k9m.onrender.com/criar-pagamento", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: usuario.uid || usuario.email, valor: 15 })
       });
-      alert("Cadastro realizado. Verifique seu e-mail antes de fazer login.");
-      setIsLogin(true);
+      const data = await response.json();
+      setPixData(data);
     } catch (err) {
-      alert("Erro no cadastro: " + err.message);
+      alert("Erro ao gerar cobrança Pix");
     }
   };
-
-  const handleRecuperarSenha = async () => {
-    if (!email) {
-      alert("Digite seu e-mail para redefinir a senha.");
-      return;
-    }
-    try {
-      await sendPasswordResetEmail(auth, email);
-      alert("Um link de redefinição foi enviado para seu e-mail.");
-    } catch (err) {
-      alert("Erro ao enviar e-mail de redefinição: " + err.message);
-    }
-  };
-}
 
   const puxarCarta = () => {
     if (cartas.length >= etapaAtual.cartas) return;
@@ -171,9 +190,28 @@ export default function App() {
     return (
       <div className="container">
         <h1>Tarô Virtual</h1>
-        <p>Olá, {usuario.email}. Para acessar sua leitura, finalize seu pagamento via Pix.</p>
-        {/* Aqui futuramente entra o QR Code Pix */}
-        <p><i>(Integração com Pix pendente)</i></p>
+        <p>Olá, {usuario?.email}. Para acessar sua leitura, realize o pagamento via Pix:</p>
+        {!pixData ? (
+          <button onClick={gerarPagamento}>Gerar cobrança Pix</button>
+        ) : (
+          <div className="pix-area">
+            <img
+              src={`data:image/png;base64,${pixData.pixImagem}`}
+              alt="QR Code Pix"
+              style={{ maxWidth: 250, marginBottom: 12 }}
+            />
+            <textarea
+              readOnly
+              value={pixData.pixQrCode}
+              rows={3}
+              style={{ width: "100%", marginBottom: 8 }}
+            />
+            <button onClick={() => navigator.clipboard.writeText(pixData.pixQrCode)}>
+              Copiar código Pix
+            </button>
+            <p style={{ marginTop: 12 }}><i>Aguardando confirmação do pagamento...</i></p>
+          </div>
+        )}
       </div>
     );
   }
@@ -265,3 +303,4 @@ export default function App() {
       )}
     </div>
   );
+}

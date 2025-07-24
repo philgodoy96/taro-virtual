@@ -323,6 +323,7 @@ button.interpretar-btn {
   margin-top: 1rem;
   color: #ddd;
   font-size: 0.95rem;
+  font-family: 'Georgia', serif;
 }
 
 .login-toggle button {
