@@ -140,6 +140,8 @@ button.interpretar-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* Remove o flash azul em iOS/Android */
 }
 
 .deck p {
@@ -164,6 +166,10 @@ button.interpretar-btn {
 .deck:hover .card-back {
   transform: scale(1.05);
   box-shadow: 0 0 25px rgba(198, 145, 255, 0.7);
+}
+
+.deck:focus {
+  outline: none;
 }
 
 /* Cartas reveladas */

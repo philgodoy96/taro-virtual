@@ -48,11 +48,26 @@ export default function App() {
         await signOut(auth);
         return;
       }
+
       setUsuario(user);
       const ref = doc(db, "usuarios", user.uid);
       const snap = await getDoc(ref);
+
       if (snap.exists()) {
-        setPagamento(snap.data().pagamento);
+        const dados = snap.data();
+        setPagamento(dados.pagamento);
+
+        if (dados.pagamento) {
+          const consultaRef = doc(db, "consultas", user.uid);
+          const consultaSnap = await getDoc(consultaRef);
+          if (consultaSnap.exists()) {
+            const leitura = consultaSnap.data();
+            setEtapa(leitura.etapa || "cruz_celta");
+            setCartas(leitura.cartas || []);
+            setPerguntasPorEtapa(leitura.perguntasPorEtapa || {});
+            setTarologo(leitura.tarologo || null);
+          }
+        }
       } else {
         await setDoc(ref, { email: user.email, pagamento: false });
         setPagamento(false);
@@ -64,6 +79,27 @@ export default function App() {
   });
   return () => unsubscribe();
 }, []);
+
+useEffect(() => {
+  if (!pixData) return;
+
+  const intervalo = setInterval(async () => {
+    try {
+      const res = await fetch(`https://taro-backend-2k9m.onrender.com/verificar-pagamento/${pixData.id}`);
+      const data = await res.json();
+      if (data.status === "pago") {
+        setPagamento(true);
+        const ref = doc(db, "usuarios", usuario.uid);
+        await setDoc(ref, { pagamento: true }, { merge: true });
+        clearInterval(intervalo);
+      }
+    } catch (err) {
+      console.error("Erro ao verificar pagamento:", err);
+    }
+  }, 4000);
+
+  return () => clearInterval(intervalo);
+}, [pixData, usuario]);
 
   const handleLogin = async () => {
   try {
@@ -122,11 +158,21 @@ const handleRecuperarSenha = async () => {
     }
   };
 
-  const puxarCarta = () => {
-    if (cartas.length >= etapaAtual.cartas) return;
-    const deck = embaralhar().filter(c => !cartas.includes(c));
-    setCartas([...cartas, deck[0]]);
-  };
+  const puxarCarta = async () => {
+  if (cartas.length >= etapaAtual.cartas) return;
+  const deck = embaralhar().filter(c => !cartas.includes(c));
+  const novaCarta = deck[0];
+  const novasCartas = [...cartas, novaCarta];
+  setCartas(novasCartas);
+
+  await setDoc(doc(db, "consultas", usuario.uid), {
+    etapa,
+    cartas: novasCartas,
+    perguntasPorEtapa,
+    tarologo,
+    timestamp: new Date()
+  });
+};
 
   const consultarTarologo = async () => {
     setCarregando(true);
@@ -150,19 +196,29 @@ const handleRecuperarSenha = async () => {
     }
   };
 
-  const avancarEtapa = () => {
-    const proxima = etapaAtual.proxima;
-    if (proxima) {
-      setEtapa(proxima);
-      setCartas([]);
-      setResposta("");
-      setPergunta("");
-      setPerguntaConfirmada(false);
-    } else {
-      alert("Sessão finalizada. Que os caminhos estejam abertos para você.");
-      setEtapa(null);
-    }
-  };
+  const avancarEtapa = async () => {
+  const proxima = etapaAtual.proxima;
+  if (proxima) {
+    setEtapa(proxima);
+    setCartas([]);
+    setResposta("");
+    setPergunta("");
+    setPerguntaConfirmada(false);
+
+    await setDoc(doc(db, "consultas", usuario.uid), {
+      etapa: proxima,
+      cartas: [],
+      perguntasPorEtapa,
+      tarologo,
+      timestamp: new Date()
+    });
+  } else {
+    alert("Sessão finalizada. Que os caminhos estejam abertos para você.");
+    setEtapa(null);
+    await setDoc(doc(db, "consultas", usuario.uid), {}); // zera
+  }
+};
+
 
   if (!usuario) {
     return (
@@ -243,12 +299,21 @@ const handleRecuperarSenha = async () => {
           placeholder="Digite sua pergunta com contexto..."
           rows={5}
         />
-        <button onClick={() => {
-          if (pergunta) {
-            setPerguntaConfirmada(true);
-            setPerguntasPorEtapa(prev => ({ ...prev, [etapa]: pergunta }));
-          }
-        }}>
+        <button onClick={async () => {
+        if (pergunta) {
+          const novaPergunta = { ...perguntasPorEtapa, [etapa]: pergunta };
+          setPerguntaConfirmada(true);
+          setPerguntasPorEtapa(novaPergunta);
+
+          await setDoc(doc(db, "consultas", usuario.uid), {
+            etapa,
+            cartas,
+            perguntasPorEtapa: novaPergunta,
+            tarologo,
+            timestamp: new Date()
+          });
+        }
+      }}>
           Iniciar leitura
         </button>
       </div>
