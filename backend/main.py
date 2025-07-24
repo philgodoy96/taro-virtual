@@ -10,9 +10,12 @@ from jose import jwt, JWTError
 import sqlite3
 import os
 from datetime import datetime, timedelta
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
 load_dotenv()
+
+MERCADO_PAGO_TOKEN = os.getenv("MERCADO_PAGO_TOKEN")
 
 # Configurações JWT
 SECRET_KEY = os.getenv("SECRET_KEY", "chave_super_secreta")
@@ -167,3 +170,41 @@ Você está conduzindo uma sessão de tarô profunda e simbólica...
     chain = LLMChain(llm=llm, prompt=prompt)
     resposta = chain.run(pergunta=data.pergunta, cartas=", ".join(data.cartas))
     return {"mensagem": resposta.strip()}
+
+import requests
+
+class PagamentoRequest(BaseModel):
+    email: str
+    valor: float = 10.0
+
+@app.post("/criar-pagamento")
+def criar_pagamento(data: PagamentoRequest):
+    url = "https://api.mercadopago.com/v1/payments"
+    headers = {
+        "Authorization": f"Bearer {MERCADO_PAGO_TOKEN}",  # substitua pelo seu token real na produção
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+    "transaction_amount": data.valor,
+    "description": "Leitura de Tarô Virtual",
+    "payment_method_id": "pix",
+    "payer": {
+    "email": data.email
+}
+}
+
+    response = requests.post(url, headers=headers, json=payload)
+
+    if response.status_code != 201:
+        raise HTTPException(status_code=500, detail="Erro ao gerar cobrança Pix")
+
+    result = response.json()
+
+    return JSONResponse(status_code=200, content={
+        "status": "pendente",
+        "pixQrCode": result["point_of_interaction"]["transaction_data"]["qr_code"],
+        "pixImagem": result["point_of_interaction"]["transaction_data"]["qr_code_base64"],
+        "id_transacao": result["id"]
+    })
+
