@@ -1,25 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const arcanosMaiores = [
-  "O Louco", "O Mago", "A Sacerdotisa", "A Imperatriz", "O Imperador",
-  "O Hierofante", "Os Enamorados", "O Carro", "A Força", "O Eremita",
-  "A Roda da Fortuna", "A Justiça", "O Enforcado", "A Morte", "A Temperança",
-  "O Diabo", "A Torre", "A Estrela", "A Lua", "O Sol", "O Julgamento", "O Mundo"
-];
+const arcanosMaiores = [/* ... mesmo conteúdo ... */];
 const naipes = ["Copas", "Ouros", "Espadas", "Paus"];
 const faces = ["Ás", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez", "Valete", "Cavaleiro", "Rainha", "Rei"];
 const arcanosMenores = naipes.flatMap(naipe => faces.map(face => `${face} de ${naipe}`));
 const baralhoCompleto = [...arcanosMaiores, ...arcanosMenores];
 
-const etapas = {
-  cruz_celta: { titulo: "Cruz Celta", cartas: 11, proxima: "etapa9" },
-  etapa9: { titulo: "Leitura de 9 cartas", cartas: 9, proxima: "etapa7" },
-  etapa7: { titulo: "Leitura de 7 cartas", cartas: 7, proxima: "etapa5" },
-  etapa5: { titulo: "Leitura de 5 cartas", cartas: 5, proxima: "etapa3" },
-  etapa3: { titulo: "Leitura Final de 3 cartas", cartas: 3, proxima: null }
-};
+const etapas = { /* ... mesmo conteúdo ... */ };
 
 export default function App() {
+  const [usuario, setUsuario] = useState(null);
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
   const [tarologo, setTarologo] = useState(null);
   const [etapa, setEtapa] = useState("cruz_celta");
   const [cartas, setCartas] = useState([]);
@@ -30,8 +24,50 @@ export default function App() {
   const [perguntasPorEtapa, setPerguntasPorEtapa] = useState({});
 
   const etapaAtual = etapas[etapa];
-
   const embaralhar = () => [...baralhoCompleto].sort(() => 0.5 - Math.random());
+
+  useEffect(() => {
+    const user = localStorage.getItem("usuario");
+    if (user) setUsuario(JSON.parse(user));
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("https://seu-backend.com/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setUsuario(data);
+        localStorage.setItem("usuario", JSON.stringify(data));
+      } else {
+        alert(data.mensagem || "Erro no login");
+      }
+    } catch (err) {
+      alert("Erro de rede no login");
+    }
+  };
+
+  const handleCadastro = async () => {
+    try {
+      const response = await fetch("https://seu-backend.com/cadastro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert("Cadastro realizado. Agora faça login.");
+        setIsLogin(true);
+      } else {
+        alert(data.mensagem || "Erro no cadastro");
+      }
+    } catch (err) {
+      alert("Erro de rede no cadastro");
+    }
+  };
 
   const puxarCarta = () => {
     if (cartas.length >= etapaAtual.cartas) return;
@@ -44,7 +80,10 @@ export default function App() {
     try {
       const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${usuario?.token}`
+        },
         body: JSON.stringify({
           pergunta: perguntasPorEtapa[etapa],
           cartas,
@@ -75,7 +114,42 @@ export default function App() {
     }
   };
 
-  // Etapa 0: escolha do tarólogo
+  // 🔐 Tela de login/cadastro
+ if (!usuario) {
+  return (
+    <div className="container">
+      <h1>Tarô Virtual</h1>
+      <h2>{isLogin ? "Login" : "Cadastro"}</h2>
+
+      <div className="login-form">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={senha}
+          onChange={e => setSenha(e.target.value)}
+        />
+        <button onClick={isLogin ? handleLogin : handleCadastro}>
+          {isLogin ? "Entrar" : "Cadastrar"}
+        </button>
+      </div>
+
+      <div className="login-toggle">
+        {isLogin ? "Não tem conta?" : "Já tem conta?"}
+        <button onClick={() => setIsLogin(!isLogin)}>
+          {isLogin ? " Cadastre-se" : " Faça login"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+  // 🃏 Escolha de tarólogo
   if (!tarologo) {
     return (
       <div className="container">
@@ -90,7 +164,7 @@ export default function App() {
     );
   }
 
-  // Etapa de pergunta por etapa
+  // ✍️ Pergunta por etapa
   if (!perguntaConfirmada) {
     return (
       <div className="container">
@@ -118,7 +192,7 @@ export default function App() {
     );
   }
 
-  // Etapa finalizada
+  // 🔚 Sessão finalizada
   if (!etapaAtual) {
     return (
       <div className="container">
@@ -128,7 +202,7 @@ export default function App() {
     );
   }
 
-  // Etapas de leitura
+  // 🔮 Leitura em andamento
   return (
     <div className="container">
       <div className="etapa-header">

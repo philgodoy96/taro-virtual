@@ -281,3 +281,57 @@ button.interpretar-btn {
   50% { transform: scale(1.03); opacity: 0.95; }
   100% { transform: scale(1); opacity: 1; }
 }
+
+/* Formulário de login/cadastro */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-form input {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #2d1d4a;
+  color: #fff;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
+}
+
+.login-form input::placeholder {
+  color: #cbbfe7;
+  opacity: 0.75;
+}
+
+.login-form button {
+  width: 100%;
+  background-color: #7e4fe7;
+}
+
+.login-form button:hover {
+  background-color: #9f6aff;
+}
+
+.login-toggle {
+  text-align: center;
+  margin-top: 1rem;
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+.login-toggle button {
+  background: none;
+  border: none;
+  color: #9f6aff;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}
