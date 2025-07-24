@@ -83,12 +83,11 @@ export default function App() {
 }, []);*/
 
 useEffect(() => {
-  // ⚠️ Simula login automático com pagamento e menu liberado
+  // ⚠️ Simula login automático com pagamento e redireciona direto para seleção de tarólogo
   setUsuario({ email: "teste@local.com", uid: "teste123" });
   setPagamento(true);
-  setMostrarMenuUsuario(true); // <- isso exibe o botão “Consultar o tarô”
+ setTarologo(null); // faz com que o bloco `if (!tarologo)` seja exibido;
 }, []);
-
 
 useEffect(() => {
   if (!pixData) return;
