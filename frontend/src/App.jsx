@@ -25,6 +25,8 @@ const etapas = {
 };
 
 export default function App() {
+console.log("🔍 API KEY ATIVA:", auth.app.options.apiKey);
+
   const [usuario, setUsuario] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
