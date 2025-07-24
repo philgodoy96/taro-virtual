@@ -181,30 +181,40 @@ class PagamentoRequest(BaseModel):
 def criar_pagamento(data: PagamentoRequest):
     url = "https://api.mercadopago.com/v1/payments"
     headers = {
-        "Authorization": f"Bearer {MERCADO_PAGO_TOKEN}",  # substitua pelo seu token real na produção
+        "Authorization": f"Bearer {MERCADO_PAGO_TOKEN}",
         "Content-Type": "application/json"
     }
 
     payload = {
-    "transaction_amount": data.valor,
-    "description": "Leitura de Tarô Virtual",
-    "payment_method_id": "pix",
-    "payer": {
-    "email": data.email
-}
-}
+        "transaction_amount": data.valor,
+        "description": "Leitura de Tarô Virtual",
+        "payment_method_id": "pix",
+        "payer": {
+            "email": data.email
+        }
+    }
 
     response = requests.post(url, headers=headers, json=payload)
 
-    if response.status_code != 201:
-        raise HTTPException(status_code=500, detail="Erro ao gerar cobrança Pix")
+    try:
+        result = response.json()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao processar resposta do Mercado Pago: {str(e)}")
 
-    result = response.json()
+    if response.status_code != 201:
+        # log detalhado do erro para debug
+        raise HTTPException(status_code=500, detail=f"Erro do Mercado Pago: {result}")
+
+    try:
+        qr_code = result["point_of_interaction"]["transaction_data"]["qr_code"]
+        qr_img = result["point_of_interaction"]["transaction_data"]["qr_code_base64"]
+        payment_id = result["id"]
+    except KeyError:
+        raise HTTPException(status_code=500, detail="Resposta do Mercado Pago incompleta ou inesperada.")
 
     return JSONResponse(status_code=200, content={
         "status": "pendente",
-        "pixQrCode": result["point_of_interaction"]["transaction_data"]["qr_code"],
-        "pixImagem": result["point_of_interaction"]["transaction_data"]["qr_code_base64"],
-        "id_transacao": result["id"]
+        "pixQrCode": qr_code,
+        "pixImagem": qr_img,
+        "id_transacao": payment_id
     })
-
