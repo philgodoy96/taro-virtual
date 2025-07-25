@@ -282,14 +282,17 @@ const handleRecuperarSenha = async () => {
   }
 
   if (!tarologo) {
+  
+    //<button onClick={() => setTarologo("clara")}>🔮 Maria Mercedes</button>
+    
     return (
       <div className="container">
         <h1>Tarô Virtual</h1>
         <p>Escolha seu tarólogo:</p>
         <div className="tarologo-selector">
           <button onClick={() => setTarologo("jaime")}>🌌 Jaime E. Cannes</button>
-          <button onClick={() => setTarologo("clara")}>🔮 Maria Mercedes</button>
-          <button onClick={() => setTarologo("felipe")}>😏 Felipe Godoy</button>
+          
+          <button onClick={() => setTarologo("felipe")}>🔮 Felipe E. Cannes</button>
         </div>
       </div>
     );
