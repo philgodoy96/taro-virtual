@@ -131,7 +131,7 @@ tarologos = {
         
         ⚠️ Importante: a sessão é composta por várias etapas.
     - Se a etapa **NÃO for** a última (“etapa3”), **não finalize a leitura nem diga que a jornada terminou**.
-    - **Somente na etapa 3** é permitido encerrar a leitura com uma conclusão, despedida ou mensagem final inspiradora.
+    - **Somente na etapa3** é permitido encerrar a leitura com uma conclusão, despedida ou mensagem final inspiradora.
 
     Evite repetições mecânicas como “mas atenção para a próxima carta…”. Escreva como um tarólogo sábio e fluido, com naturalidade e profundidade.
     """
@@ -158,7 +158,7 @@ tarologos = {
         
         ⚠️ Importante: a sessão é composta por várias etapas.
     - Se a etapa **NÃO for** a última (“etapa3”), **não finalize a leitura nem diga que a jornada terminou**.
-    - **Somente na etapa 3** é permitido encerrar a leitura com uma conclusão, despedida ou mensagem final inspiradora.
+    - **Somente na etapa3** é permitido encerrar a leitura com uma conclusão, despedida ou mensagem final inspiradora.
 
     Evite repetições mecânicas como “mas atenção para a próxima carta…”. Escreva como um tarólogo sábio e fluido, com naturalidade e profundidade."""
 
@@ -185,7 +185,7 @@ tarologos = {
         
         ⚠️ Importante: a sessão é composta por várias etapas.
     - Se a etapa **NÃO for** a última (“etapa3”), **não finalize a leitura nem diga que a jornada terminou**.
-    - **Somente na etapa 3** é permitido encerrar a leitura com uma conclusão, despedida ou mensagem final inspiradora.
+    - **Somente na etapa3** é permitido encerrar a leitura com uma conclusão, despedida ou mensagem final inspiradora.
 
     Evite repetições mecânicas como “mas atenção para a próxima carta…”. Escreva como um tarólogo sábio e fluido, com naturalidade e profundidade."""
 
