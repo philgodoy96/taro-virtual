@@ -184,21 +184,36 @@ button.interpretar-btn {
 .revealed-card {
   background: #2e1e49;
   border: 1px solid #8057c3;
-  padding: 0.8rem 0.5rem;
+  padding: 0.8rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(140, 100, 255, 0.2);
   text-align: center;
-  width: 110px;
+  width: 130px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .revealed-card div {
   font-size: 0.95rem;
   margin-top: 0.5rem;
   word-wrap: break-word;
+}
+
+.revealed-card img {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.revealed-card div {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-align: center;
+  word-break: break-word;
 }
 
 /* Interpretação */
