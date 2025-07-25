@@ -195,6 +195,11 @@ button.interpretar-btn {
   justify-content: space-between;
 }
 
+.revealed-card div {
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  word-wrap: break-word;
+}
 
 /* Interpretação */
 .resposta {
