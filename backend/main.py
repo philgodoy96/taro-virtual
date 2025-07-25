@@ -143,7 +143,8 @@ llm = OpenAI(
 
 # ENDPOINT: Consulta protegida
 @app.post("/consultar-taro")
-def consultar_taro(data: ConsultaRequest, email: str = Depends(verify_token)):
+# def consultar_taro(data: ConsultaRequest, email: str = Depends(verify_token)):
+def consultar_taro(data: ConsultaRequest):
     conn = sqlite3.connect("usuarios.db")
     cursor = conn.cursor()
     cursor.execute("SELECT pagamento FROM usuarios WHERE email = ?", (email,))
