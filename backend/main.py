@@ -145,11 +145,13 @@ llm = OpenAI(
 @app.post("/consultar-taro")
 # def consultar_taro(data: ConsultaRequest, email: str = Depends(verify_token)):
 def consultar_taro(data: ConsultaRequest):
-    conn = sqlite3.connect("usuarios.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT pagamento FROM usuarios WHERE email = ?", (email,))
-    row = cursor.fetchone()
-    conn.close()
+   # Verificação desativada durante testes
+    # conn = sqlite3.connect("usuarios.db")
+    # cursor = conn.cursor()
+    # cursor.execute("SELECT pagamento FROM usuarios WHERE email = ?", (email,))
+    # row = cursor.fetchone()
+    # conn.close()
+
     #if not row or not row[0]:
     #    raise HTTPException(status_code=403, detail="Usuário não realizou o pagamento")
 
