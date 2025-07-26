@@ -174,15 +174,15 @@ button.interpretar-btn {
 
 /* Cartas reveladas */
 .spread {
+  order: -1; /* força os novos a virem primeiro no fluxo do grid */
   display: flex;
   flex-wrap: wrap;
+  flex-direction: row-reverse; /* inverte a ordem visual */
+  justify-content: flex-end;   /* alinha o início da linha à esquerda */
   gap: 10px;
-  justify-content: center;
   margin-top: 1rem;
-  max-width: calc(5 * 100px + 4 * 10px); /* 5 cartas por linha */
-  margin-left: auto;
-  margin-right: auto;
 }
+
 
 .revealed-card {
   background: #2e1e49;
