@@ -122,7 +122,11 @@ useEffect(() => {
     cartas.length === etapaAtual.cartas &&
     interpretarRef.current
   ) {
-    interpretarRef.current.scrollIntoView({ behavior: 'smooth' });
+    const timer = setTimeout(() => {
+      interpretarRef.current.scrollIntoView({ behavior: 'smooth' });
+    }, 1500); // 1500ms = 1.5 segundos
+
+    return () => clearTimeout(timer); // limpeza do timer caso algo mude antes
   }
 }, [cartas, etapaAtual]);
 
