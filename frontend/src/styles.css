@@ -178,7 +178,7 @@ button.interpretar-btn {
   flex-wrap: wrap-reverse;  /* força quebra de linha de baixo pra cima */
   flex-direction: row-reverse; /* faz os itens começarem da direita */
   gap: 10px;
-  justify-content: flex-end; /* alinha o "início" visual para a direita */
+  justify-content: center; /* alinha o "início" visual para a direita */
   margin-top: 1rem;
 }
 
