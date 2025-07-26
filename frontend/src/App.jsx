@@ -115,10 +115,14 @@ useEffect(() => {
 }, [pixData, usuario]);
 
 useEffect(() => {
-  if (cartas.length === etapaAtual.cartas && interpretarRef.current) {
+  if (
+    etapaAtual &&
+    cartas.length === etapaAtual.cartas &&
+    interpretarRef.current
+  ) {
     interpretarRef.current.scrollIntoView({ behavior: 'smooth' });
   }
-}, [cartas, etapaAtual.cartas]);
+}, [cartas, etapaAtual]);
 
   const handleLogin = async () => {
   try {
