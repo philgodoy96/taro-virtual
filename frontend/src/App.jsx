@@ -360,18 +360,13 @@ const handleRecuperarSenha = async () => {
       )}
 
       <div className="spread">
-        {cartas.map((carta, idx) => (
-          <div key={idx} className="revealed-card">
-            <img
-              src={`/cartas/${carta}.jpg`}
-              alt={carta}
-              style={{ width: "100px", height: "auto", marginBottom: "0.5rem" }}
-            />
-            <div>{carta}</div>
-          </div>
+        {[...cartas].reverse().map((carta) => (
+        <div key={carta} className="revealed-card">
+          <img src={`/cartas/${carta}.jpg`} alt={carta} />
+          <div>{carta}</div>
+        </div>
         ))}
       </div>
-
 
       {cartas.length === etapaAtual.cartas && !resposta && (
         <button className="interpretar-btn" onClick={consultarTarologo} disabled={carregando}>
