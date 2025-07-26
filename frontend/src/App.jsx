@@ -114,6 +114,8 @@ useEffect(() => {
   return () => clearInterval(intervalo);
 }, [pixData, usuario]);
 
+const etapaAtual = etapas[etapa];
+
 useEffect(() => {
   if (
     etapaAtual &&
@@ -164,7 +166,7 @@ const handleRecuperarSenha = async () => {
   }
 };
 
-  const etapaAtual = etapas[etapa];
+  
   const embaralhar = () => [...baralhoCompleto].sort(() => 0.5 - Math.random());
 
   const gerarPagamento = async () => {
