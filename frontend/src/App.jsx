@@ -124,7 +124,7 @@ useEffect(() => {
   ) {
     const timer = setTimeout(() => {
       interpretarRef.current.scrollIntoView({ behavior: 'smooth' });
-    }, 1200);
+    }, 1350);
 
     return () => clearTimeout(timer); // limpeza do timer caso algo mude antes
   }
