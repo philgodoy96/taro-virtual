@@ -174,12 +174,10 @@ button.interpretar-btn {
 
 /* Cartas reveladas */
 .spread {
-  order: -1; /* força os novos a virem primeiro no fluxo do grid */
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row-reverse; /* inverte a ordem visual */
-  justify-content: flex-end;   /* alinha o início da linha à esquerda */
+  display: grid;
+  grid-template-columns: repeat(5, 100px); /* ajuste colunas conforme o layout */
   gap: 10px;
+  justify-content: center;
   margin-top: 1rem;
 }
 
