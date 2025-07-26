@@ -174,9 +174,9 @@ button.interpretar-btn {
 
 /* Cartas reveladas */
 .spread {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row-reverse; /* novo: cartas novas no topo */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-auto-flow: row dense;
   gap: 10px;
   justify-content: center;
   margin-top: 1rem;
