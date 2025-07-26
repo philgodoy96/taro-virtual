@@ -175,11 +175,13 @@ button.interpretar-btn {
 /* Cartas reveladas */
 .spread {
   display: flex;
-  flex-wrap: wrap-reverse;  /* força quebra de linha de baixo pra cima */
-  flex-direction: row-reverse; /* faz os itens começarem da direita */
+  flex-wrap: wrap;
   gap: 10px;
-  justify-content: flex-end; /* alinha o "início" visual para a direita */
+  justify-content: center;
   margin-top: 1rem;
+  max-width: calc(5 * 100px + 4 * 10px); /* 5 cartas por linha */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .revealed-card {
