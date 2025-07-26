@@ -286,3 +286,7 @@ def criar_pagamento(data: PagamentoRequest):
         "pixImagem": qr_img,
         "id_transacao": payment_id
     })
+
+@app.get("/")
+def wake_up():
+    return {"status": "Backend acordado ✨"}

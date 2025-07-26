@@ -176,6 +176,7 @@ button.interpretar-btn {
 .spread {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column-reverse; /* novo: cartas novas no topo */
   gap: 10px;
   justify-content: center;
   margin-top: 1rem;

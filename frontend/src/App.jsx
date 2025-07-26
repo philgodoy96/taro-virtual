@@ -82,11 +82,15 @@ export default function App() {
 }, []);*/
 
 useEffect(() => {
-  // ⚠️ Simula login automático com pagamento e redireciona direto para seleção de tarólogo
-  setUsuario({ email: "teste@local.com", uid: "teste123" });
-  setPagamento(true);
- setTarologo(null); // faz com que o bloco `if (!tarologo)` seja exibido;
-}, []);
+    // Wake up backend Render (warm-up)
+    fetch("https://taro-backend-2k9m.onrender.com/")
+  }, []);
+
+  useEffect(() => {
+    setUsuario({ email: "teste@local.com", uid: "teste123" });
+    setPagamento(true);
+    setTarologo(null);
+  }, []);
 
 useEffect(() => {
   if (!pixData) return;
