@@ -112,6 +112,12 @@ button {
   font-weight: bold;
 }
 
+.iniciar-esquerda {
+  margin-left: 0;
+  margin-right: auto;
+  display: block;
+}
+
 button:hover {
   background-color: #9f6aff;
   box-shadow: 0 0 12px #d0a7ff;

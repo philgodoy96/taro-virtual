@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { auth, db } from "./firebaseConfig";
 import {
   createUserWithEmailAndPassword,
@@ -39,6 +39,7 @@ export default function App() {
   const [pergunta, setPergunta] = useState("");
   const [perguntaConfirmada, setPerguntaConfirmada] = useState(false);
   const [perguntasPorEtapa, setPerguntasPorEtapa] = useState({});
+  const interpretarRef = useRef(null);
 
   /*useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -112,6 +113,12 @@ useEffect(() => {
 
   return () => clearInterval(intervalo);
 }, [pixData, usuario]);
+
+useEffect(() => {
+  if (cartas.length === etapaAtual.cartas && interpretarRef.current) {
+    interpretarRef.current.scrollIntoView({ behavior: 'smooth' });
+  }
+}, [cartas, etapaAtual.cartas]);
 
   const handleLogin = async () => {
   try {
@@ -315,7 +322,7 @@ const handleRecuperarSenha = async () => {
           placeholder="Digite sua pergunta com contexto..."
           rows={5}
         />
-        <button onClick={async () => {
+        <button className="iniciar-esquerda" onClick={async () => {
         if (pergunta) {
           const novaPergunta = { ...perguntasPorEtapa, [etapa]: pergunta };
           setPerguntaConfirmada(true);
@@ -369,10 +376,16 @@ const handleRecuperarSenha = async () => {
       </div>
 
       {cartas.length === etapaAtual.cartas && !resposta && (
-        <button className="interpretar-btn" onClick={consultarTarologo} disabled={carregando}>
-          {carregando ? "Consultando..." : "Interpretar Leitura"}
-        </button>
-      )}
+      <button
+        ref={interpretarRef}
+        className="interpretar-btn"
+        onClick={consultarTarologo}
+        disabled={carregando}
+      >
+        {carregando ? "Consultando..." : "Interpretar Leitura"}
+      </button>
+    )}
+
 
       {resposta && (
         <div className="resposta">
