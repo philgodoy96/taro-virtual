@@ -175,8 +175,7 @@ button.interpretar-btn {
 /* Cartas reveladas */
 .spread {
   display: flex;
-  flex-wrap: wrap-reverse;  /* força quebra de linha de baixo pra cima */
-  flex-direction: row-reverse; /* faz os itens começarem da direita */
+  flex-wrap: wrap;  /* força quebra de linha de baixo pra cima */
   gap: 10px;
   justify-content: center; /* alinha o "início" visual para a direita */
   margin-top: 1rem;
