@@ -67,6 +67,42 @@ textarea::placeholder {
   color: #cbbfe7;
   opacity: 0.8;
 }
+.card-animation {
+  width: 100px;
+  height: 140px;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 0 30px rgba(198, 145, 255, 0.5);
+  background: linear-gradient(160deg, #4a318c, #7e4fe7);
+  overflow: hidden;
+}
+
+.card-animation::before {
+  content: '';
+  position: absolute;
+  width: 120%;
+  height: 100%;
+  background: url('/cartas/The_Star.jpg') center/cover;
+  opacity: 0.25;
+  animation: floatCard 2s ease-in-out infinite alternate;
+}
+
+@keyframes floatCard {
+  0% { transform: translateY(0); opacity: 0.25; }
+  100% { transform: translateY(-10px); opacity: 0.5; }
+}
+
+@keyframes slidePattern {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-10px); }
+}
+
+button {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+  transform: scale(1.03);
+}
 
 /* Botões */
 button {
