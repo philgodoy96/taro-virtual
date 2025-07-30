@@ -92,7 +92,7 @@ export default function TarotApp() {
         <div className="draw-phase">
           <h2>✨ Click to draw your card</h2>
           {drawnCards.length < numCards && !currentCard && (
-            <div className="deck" onClick={handleDrawCard}>
+            <div className="deck" onClick={drawCard}>
               <div className="card-back">🔮</div>
               <p>Click to draw your card</p>
             </div>
