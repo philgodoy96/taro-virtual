@@ -1,157 +1,138 @@
-import React, { useState, useEffect} from "react";
+// TarotApp.jsx — Nova estrutura com fluxo dividido por etapas (Welcome, Draw, Result)
+import React, { useState, useEffect } from "react";
 
-const spreads = {
-  pathOfTheHeart: {
-    title: "Path of the Heart",
-    cards: 5,
-    description: "Explore emotions, hidden dynamics, and romantic outcomes.",
-    positions: [
-      "Your emotional state",
-      "Their feelings",
-      "Hidden influence",
-      "Spiritual advice",
-      "Likely outcome"
-    ]
-  },
-  threeCard: {
-    title: "Past, Present, Future",
-    cards: 3,
-    description: "A quick timeline snapshot of your situation.",
-    positions: ["Past", "Present", "Future"]
-  },
-  celticCross: {
-    title: "Celtic Cross",
-    cards: 10,
-    description: "A deep and traditional 10-card reading.",
-    positions: [
-      "The Present",
-      "The Challenge",
-      "The Subconscious Root",
-      "The Past",
-      "The Conscious Goal",
-      "The Near Future",
-      "Your Attitude",
-      "External Influences",
-      "Hopes and Fears",
-      "Final Outcome"
-    ]
-  }
-};
+const fullDeck = (() => {
+  const major = [
+    "The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor",
+    "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit",
+    "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance",
+    "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"
+  ];
+  const suits = ["Cups", "Pentacles", "Swords", "Wands"];
+  const faces = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
+  const minor = suits.flatMap(suit => faces.map(face => `${face} of ${suit}`));
+  return [...major, ...minor];
+})();
 
-const majorArcana = [
-  "The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor",
-  "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit",
-  "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance",
-  "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"
-];
-
-const suits = ["Cups", "Pentacles", "Swords", "Wands"];
-const faces = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
-const minorArcana = suits.flatMap(suit => faces.map(face => `${face} of ${suit}`));
-const fullDeck = [...majorArcana, ...minorArcana];
-
-function shuffleDeck(deck) {
-  return [...deck].sort(() => Math.random() - 0.5);
-}
+const shuffleDeck = () => [...fullDeck].sort(() => Math.random() - 0.5);
 
 export default function TarotApp() {
   const [question, setQuestion] = useState("");
-  const [spreadKey, setSpreadKey] = useState("pathOfTheHeart");
+  const [numCards, setNumCards] = useState(3);
+  const [stage, setStage] = useState("welcome");
+  const [deck, setDeck] = useState([]);
   const [drawnCards, setDrawnCards] = useState([]);
-  const [interpretation, setInterpretation] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const handleDrawCards = () => {
-    const spread = spreads[spreadKey];
-    const shuffled = shuffleDeck(fullDeck);
-    setDrawnCards(shuffled.slice(0, spread.cards));
-    setInterpretation("");
-  };
+  const [interpretation, setInterpretation] = useState("");
 
   useEffect(() => {
     fetch("https://taro-backend-2k9m.onrender.com/")
-      .then(res => console.log("🔥 Backend woke up!"))
-      .catch(err => console.error("Erro ao acordar backend:", err));
+      .then(() => console.log("🔥 Backend ready"))
+      .catch(console.error);
   }, []);
 
-  const handleInterpret = async () => {
-  const spread = spreads[spreadKey];
-  setLoading(true); // INÍCIO
+  const startReading = () => {
+    setDeck(shuffleDeck());
+    setDrawnCards([]);
+    setInterpretation("");
+    setStage("draw");
+  };
 
-  try {
-    const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        question,
-        cards: drawnCards,
-        positions: spread.positions,
-        tarologo: "clara"
-      })
-    });
-
-    if (!response.ok) {
-      console.error("Error:", await response.text());
-      alert("❌ Failed to interpret.");
-      return;
+  const drawCard = () => {
+    if (drawnCards.length < numCards) {
+      const nextCard = deck.find(card => !drawnCards.includes(card));
+      setDrawnCards([...drawnCards, nextCard]);
     }
+  };
 
-    const data = await response.json();
-    setInterpretation(data.message);
-  } catch (error) {
-    console.error("Network error:", error);
-    alert("Network error.");
-  } finally {
-    setLoading(false); // FIM
-  }
-};
-
-
-  const spread = spreads[spreadKey];
+  const handleInterpret = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question,
+          cards: drawnCards,
+          positions: Array(drawnCards.length).fill("Card"),
+          tarologo: "clara"
+        })
+      });
+      const data = await response.json();
+      setInterpretation(data.message);
+      setStage("result");
+    } catch (err) {
+      alert("Error during interpretation");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container">
-      <h1>🔮 Welcome to Your Tarot Reading</h1>
+      {stage === "welcome" && (
+        <div className="welcome">
+          <h1>🔮 Welcome to Your Tarot Reading</h1>
+          <p>Close your eyes, take a breath, and focus on your question...</p>
+          <label>Your question:</label>
+          <textarea value={question} onChange={e => setQuestion(e.target.value)} rows={3} />
 
-      <label>Your question:</label>
-      <textarea
-        rows={3}
-        placeholder="Type your question here..."
-        value={question}
-        onChange={e => setQuestion(e.target.value)}
-      />
+          <label>How many cards do you want to draw?</label>
+          <select value={numCards} onChange={e => setNumCards(parseInt(e.target.value))}>
+            {[3, 5, 7, 10].map(n => <option key={n} value={n}>{n} cards</option>)}
+          </select>
 
-      <label>Select a spread:</label>
-      <select value={spreadKey} onChange={e => setSpreadKey(e.target.value)}>
-        {Object.entries(spreads).map(([key, spread]) => (
-          <option key={key} value={key}>{spread.title}</option>
-        ))}
-      </select>
+          <button onClick={startReading}>Start Reading</button>
+        </div>
+      )}
 
-      <p><i>{spread.description}</i></p>
+      {stage === "draw" && (
+        <div className="draw-phase">
+          <h2>✨ Click to draw your card</h2>
+          {drawnCards.length < numCards && (
+            <div className="deck" onClick={drawCard}>
+              <div className="card-back">🔮</div>
+              <p>Click the deck</p>
+            </div>
+          )}
 
-      <button onClick={handleDrawCards}>Draw Cards</button>
-
-      <div className="card-list">
-        {drawnCards.map((card, idx) => (
-          <div className="card" key={idx}>
-            <strong>{spread.positions[idx]}:</strong>
-            <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
-            <div>{card}</div>
+          <div className="card-list">
+            {drawnCards.map((card, idx) => (
+              <div className="card" key={idx}>
+                <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
+                <div>{card}</div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {drawnCards.length === spread.cards && (
-      <button onClick={handleInterpret} disabled={loading}>
-        {loading ? "Interpreting..." : "Interpret Reading"}
-      </button>
-    )}
+          {drawnCards.length === numCards && !interpretation && (
+            <button
+              onClick={handleInterpret}
+              disabled={loading}
+              className={loading ? "loading" : ""}
+            >
+              {loading ? "Interpreting..." : "Interpret Reading"}
+            </button>
+          )}
 
-      {interpretation && (
+        </div>
+      )}
+
+      {stage === "result" && (
         <div className="interpretation">
           <h3>🔍 Interpretation:</h3>
           <p>{interpretation}</p>
+
+        <button onClick={() => {
+        setStage("welcome");
+        setQuestion("");
+        setInterpretation("");
+        setDrawnCards([]);
+      }}>
+        🔁 Return to Reading
+      </button>
+
         </div>
       )}
     </div>

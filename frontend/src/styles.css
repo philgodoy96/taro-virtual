@@ -14,7 +14,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* Container central */
+/* Container */
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -27,56 +27,43 @@ body {
 }
 
 /* Títulos */
-h1 {
+h1, h2, h3 {
   font-family: 'Cinzel Decorative', cursive;
   color: #e3d0ff;
-  font-size: 2.2rem;
   margin-bottom: 1rem;
-  text-align: left;
+  text-align: center;
 }
 
-h2 {
-  font-family: 'Cinzel Decorative', cursive;
-  color: #e3d0ff;
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-h3 {
-  font-family: 'Cinzel Decorative', cursive;
-  color: #e3d0ff;
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  text-align: left;
-}
+h1 { font-size: 2.2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.4rem; }
 
 .container p {
   margin-bottom: 1.25rem;
   font-size: 1.1rem;
 }
 
-/* Textarea */
-textarea {
+/* Welcome screen */
+.welcome {
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.welcome textarea,
+.welcome select {
   width: 100%;
-  padding: 1.2rem;
-  font-family: 'Georgia', serif;
+  padding: 1rem;
   font-size: 1rem;
   border-radius: 10px;
-  border: none;
-  margin-bottom: 1rem;
   background-color: #2d1d4a;
   color: #fff;
-  outline: none;
-  resize: vertical;
-  box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.4);
-  min-height: 120px;
-  line-height: 1.6;
+  border: none;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
+  font-family: 'Georgia', serif;
 }
 
 textarea::placeholder {
-  font-family: 'Georgia', serif;
-  font-size: 0.95rem;
   color: #cbbfe7;
   opacity: 0.8;
 }
@@ -91,8 +78,40 @@ button {
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 0.5rem;
+  margin: 0.5rem auto;
+  display: block;
   font-weight: bold;
+}
+button.loading {
+  background-color: #9f6aff;
+  box-shadow: 0 0 15px #dcbfff;
+  animation: glowPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+  0%   { box-shadow: 0 0 12px #dcbfff; }
+  50%  { box-shadow: 0 0 24px #e8ccff; }
+  100% { box-shadow: 0 0 12px #dcbfff; }
+}
+
+select {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  font-family: 'Georgia', serif;
+  background-color: #2d1d4a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
+  appearance: none;
+  outline: none;
+  background-image: linear-gradient(45deg, #7e4fe7 10%, transparent 10%), 
+                    linear-gradient(135deg, #7e4fe7 10%, transparent 10%);
+  background-position: right 1rem top 50%, right 1.5rem top 50%;
+  background-size: 0.65em 0.65em;
+  background-repeat: no-repeat;
 }
 
 button:hover {
@@ -100,16 +119,48 @@ button:hover {
   box-shadow: 0 0 12px #d0a7ff;
 }
 
-/* Lista de cartas */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Deck animado */
+.deck {
+  margin: 2rem auto;
+  cursor: pointer;
+  animation: pulse 2.5s infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-back {
+  width: 80px;
+  height: 120px;
+  background: linear-gradient(145deg, #3e2c63, #6c48b3);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(198, 145, 255, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.deck:hover .card-back {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(198, 145, 255, 0.7);
+}
+
+/* Cartas reveladas */
 .card-list {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
-/* Carta revelada */
 .card {
   background: #2e1e49;
   border: 1px solid #8057c3;
@@ -122,6 +173,7 @@ button:hover {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  animation: fadeIn 0.4s ease-in-out;
 }
 
 .card img {
@@ -132,18 +184,12 @@ button:hover {
   margin-bottom: 0.5rem;
 }
 
-.card strong {
-  font-size: 0.9rem;
-  color: #e3d0ff;
-  margin-bottom: 0.25rem;
-  text-align: center;
-}
-
 .card div {
   font-size: 0.95rem;
   line-height: 1.2;
   text-align: center;
   word-break: break-word;
+  color: #f0e9ff;
 }
 
 /* Interpretação */
@@ -166,7 +212,7 @@ button:hover {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: #fff3ff;
-  text-align: left;
+  text-align: center;
 }
 
 .interpretation p {
@@ -178,7 +224,19 @@ button:hover {
   margin-bottom: 1.6rem;
 }
 
-/* Mobile improvements */
+/* Animações */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.03); opacity: 0.95; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
   body {
     padding: 1rem;
@@ -190,17 +248,9 @@ button:hover {
     border-radius: 12px;
   }
 
-  h1 {
-    font-size: 1.9rem;
-  }
-
-  h2 {
-    font-size: 1.6rem;
-  }
-
-  h3 {
-    font-size: 1.3rem;
-  }
+  h1 { font-size: 1.9rem; }
+  h2 { font-size: 1.6rem; }
+  h3 { font-size: 1.3rem; }
 
   textarea {
     font-size: 0.9rem;
@@ -208,35 +258,13 @@ button:hover {
     min-height: 100px;
   }
 
-  textarea::placeholder {
-    font-size: 0.9rem;
-  }
-
-  .interpretation {
-    padding: 1.2rem;
-    font-size: 1.05rem;
-    line-height: 1.6;
-  }
-
   .interpretation p {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     text-align: left;
-    word-break: break-word;
     line-height: 1.5;
-  }
-
-  .interpretation h3 {
-    font-size: 1.35rem;
   }
 
   button {
     font-size: 1rem;
   }
-}
-
-/* Animação do deck (caso reutilize) */
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.03); opacity: 0.95; }
-  100% { transform: scale(1); opacity: 1; }
 }
