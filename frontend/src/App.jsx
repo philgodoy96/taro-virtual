@@ -25,17 +25,16 @@ export default function TarotApp() {
   const [loading, setLoading] = useState(false);
   const [interpretation, setInterpretation] = useState("");
 
-  const defaultSpreads = {
-    3: ["Past", "Present", "Future"],
-    5: ["Situation", "Challenge", "Advice", "External Influence", "Outcome"],
-    7: ["You", "Obstacle", "Hidden Factor", "Advice", "Others", "Future", "Spiritual Insight"],
-    10: ["Present", "Challenge", "Subconscious", "Past", "Conscious", "Near Future", "You", "Environment", "Hopes/Fears", "Outcome"]
-  };
+ const defaultSpreads = {
+  3: ["Past", "Present", "Future"],
+  5: ["Situation", "Challenge", "Advice", "External Influence", "Outcome"],
+  7: ["You", "Obstacle", "Hidden Factor", "Advice", "Others", "Future", "Spiritual Insight"],
+  10: ["Present", "Challenge", "Subconscious", "Past", "Conscious", "Near Future", "You", "Environment", "Hopes/Fears", "Outcome"]
+};
 
-  const spread = {
-    positions: spread.positions.slice(0, drawnCards.length),
-  };
-
+const spread = {
+  positions: defaultSpreads[numCards] || Array(numCards).fill("Card")
+};
 
   useEffect(() => {
     fetch("https://taro-backend-2k9m.onrender.com/")
@@ -65,8 +64,8 @@ export default function TarotApp() {
         body: JSON.stringify({
           question,
           cards: drawnCards,
-          positions: Array(drawnCards.length).fill("Card"),
-          tarologo: "clara"
+          positions: spread.positions.slice(0, drawnCards.length),
+          tarologo: ""
         })
       });
       const data = await response.json();
@@ -101,24 +100,12 @@ export default function TarotApp() {
       {stage === "draw" && (
         <div className="draw-phase">
           <h2>✨ Click to draw your card</h2>
-            {drawnCards.length < numCards && (
-              <div className="deck" onClick={drawCard}>
-                <div className="card-back">🔮</div>
-                <p>Click to draw your card</p>
-              </div>
-            )}
-
-
-          <div className="card-list">
-            {drawnCards.map((card, idx) => (
-            <div className="card" key={idx}>
-              <strong>{spread.positions[idx]}</strong> {/* ← título simbólico */}
-              <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
-              <div>{card}</div>
+          {drawnCards.length < numCards && (
+            <div className="deck" onClick={drawCard}>
+              <div className="card-back">🔮</div>
+              <p>Click to draw your card</p>
             </div>
-          ))}
-          </div>
-
+          )}
           {drawnCards.length === numCards && !interpretation && (
             <button
               onClick={handleInterpret}
@@ -128,7 +115,19 @@ export default function TarotApp() {
               {loading ? "Interpreting..." : "Interpret Reading"}
             </button>
           )}
+        </div>
+      )}
 
+      {/* Mostrar cartas sorteadas em qualquer estágio (draw ou result) */}
+      {(stage === "draw" || stage === "result") && (
+        <div className="card-list">
+          {drawnCards.map((card, idx) => (
+            <div className="card" key={idx}>
+              <strong>{spread.positions[idx]}</strong>
+              <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
+              <div>{card}</div>
+            </div>
+          ))}
         </div>
       )}
 
