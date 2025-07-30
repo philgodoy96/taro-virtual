@@ -101,12 +101,13 @@ export default function TarotApp() {
       {stage === "draw" && (
         <div className="draw-phase">
           <h2>✨ Click to draw your card</h2>
-          {drawnCards.length < numCards && !currentCard && (
-            <div className="deck" onClick={drawCard}>
-              <div className="card-back">🔮</div>
-              <p>Click to draw your card</p>
-            </div>
-          )}
+            {drawnCards.length < numCards && (
+              <div className="deck" onClick={drawCard}>
+                <div className="card-back">🔮</div>
+                <p>Click to draw your card</p>
+              </div>
+            )}
+
 
           <div className="card-list">
             {drawnCards.map((card, idx) => (
@@ -117,14 +118,6 @@ export default function TarotApp() {
             </div>
           ))}
           </div>
-
-          {currentCard && (
-            <div className="card animated">
-              <strong>{spread.positions[drawnCards.length]}</strong>
-              <img src={`/cartas/${encodeURIComponent(currentCard)}.jpg`} alt={currentCard} />
-              <div>{currentCard}</div>
-            </div>
-          )}
 
           {drawnCards.length === numCards && !interpretation && (
             <button
