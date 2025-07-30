@@ -43,16 +43,6 @@ h2 {
   text-align: left;
 }
 
-.etapa-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.etapa-header h2,
-.etapa-header p {
-  text-align: center;
-}
-
 h3 {
   font-family: 'Cinzel Decorative', cursive;
   color: #e3d0ff;
@@ -61,20 +51,13 @@ h3 {
   text-align: left;
 }
 
-/* Etapa centralizada */
-.etapa-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-/* Parágrafos e labels */
 .container p {
   margin-bottom: 1.25rem;
   font-size: 1.1rem;
 }
 
-/* Textarea para pergunta */
-.pergunta-textarea {
+/* Textarea */
+textarea {
   width: 100%;
   padding: 1.2rem;
   font-family: 'Georgia', serif;
@@ -91,7 +74,7 @@ h3 {
   line-height: 1.6;
 }
 
-.pergunta-textarea::placeholder {
+textarea::placeholder {
   font-family: 'Georgia', serif;
   font-size: 0.95rem;
   color: #cbbfe7;
@@ -112,82 +95,22 @@ button {
   font-weight: bold;
 }
 
-.iniciar-esquerda {
-  margin-left: 0;
-  margin-right: auto;
-  display: block;
-}
-
 button:hover {
   background-color: #9f6aff;
   box-shadow: 0 0 12px #d0a7ff;
 }
 
-/* Botões dos tarólogos */
-.tarologo-selector button {
-  background-color: #5f3abf;
-}
-.tarologo-selector button:hover {
-  background-color: #8e63f3;
-}
-
-/* Botão de interpretar leitura */
-button.interpretar-btn {
-  display: block;
-  margin: 1.5rem auto 1rem auto;
-  text-align: center;
-}
-
-/* Deck (puxar carta) */
-.deck {
-  margin: 2rem auto;
-  cursor: pointer;
-  animation: pulse 3s infinite;
+/* Lista de cartas */
+.card-list {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  outline: none;
-  -webkit-tap-highlight-color: transparent; /* Remove o flash azul em iOS/Android */
-}
-
-.deck p {
-  margin-top: 1rem;
-  font-size: 1rem;
-  text-align: center;
-}
-
-.card-back {
-  width: 80px;
-  height: 120px;
-  background: linear-gradient(145deg, #3e2c63, #6c48b3);
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(198, 145, 255, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.deck:hover .card-back {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(198, 145, 255, 0.7);
-}
-
-.deck:focus {
-  outline: none;
-}
-
-/* Cartas reveladas */
-.spread {
-  display: flex;
-  flex-wrap: wrap;  /* força quebra de linha de baixo pra cima */
+  flex-wrap: wrap;
   gap: 10px;
-  justify-content: center; /* alinha o "início" visual para a direita */
+  justify-content: center;
   margin-top: 1rem;
 }
 
-.revealed-card {
+/* Carta revelada */
+.card {
   background: #2e1e49;
   border: 1px solid #8057c3;
   padding: 0.8rem;
@@ -201,21 +124,22 @@ button.interpretar-btn {
   justify-content: flex-start;
 }
 
-.revealed-card div {
-  font-size: 0.95rem;
-  margin-top: 0.5rem;
-  word-wrap: break-word;
-}
-
-.revealed-card img {
+.card img {
   width: 100%;
   height: auto;
   max-height: 180px;
   object-fit: contain;
+  margin-bottom: 0.5rem;
 }
 
-.revealed-card div {
-  margin-top: 0.5rem;
+.card strong {
+  font-size: 0.9rem;
+  color: #e3d0ff;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.card div {
   font-size: 0.95rem;
   line-height: 1.2;
   text-align: center;
@@ -223,7 +147,7 @@ button.interpretar-btn {
 }
 
 /* Interpretação */
-.resposta {
+.interpretation {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1.5rem;
@@ -238,14 +162,14 @@ button.interpretar-btn {
   white-space: pre-line;
 }
 
-.resposta h3 {
+.interpretation h3 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: #fff3ff;
   text-align: left;
 }
 
-.resposta p {
+.interpretation p {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.3rem;
   line-height: 1.65;
@@ -278,100 +202,41 @@ button.interpretar-btn {
     font-size: 1.3rem;
   }
 
-  .pergunta-textarea {
+  textarea {
     font-size: 0.9rem;
     padding: 1rem;
     min-height: 100px;
   }
 
-  .pergunta-textarea::placeholder {
+  textarea::placeholder {
     font-size: 0.9rem;
   }
 
-  .resposta {
+  .interpretation {
     padding: 1.2rem;
     font-size: 1.05rem;
     line-height: 1.6;
   }
 
-  .resposta p {
+  .interpretation p {
     font-size: 1.25rem;
     text-align: left;
     word-break: break-word;
     line-height: 1.5;
   }
 
-  .resposta h3 {
+  .interpretation h3 {
     font-size: 1.35rem;
   }
 
   button {
     font-size: 1rem;
   }
-
-  button.interpretar-btn {
-    margin-top: 1.25rem;
-  }
 }
 
-/* Animação sutil do deck */
+/* Animação do deck (caso reutilize) */
 @keyframes pulse {
   0% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.03); opacity: 0.95; }
   100% { transform: scale(1); opacity: 1; }
-}
-
-/* Formulário de login/cadastro */
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin-top: 2rem;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.login-form input {
-  padding: 0.9rem 1rem;
-  border-radius: 10px;
-  border: none;
-  background-color: #2d1d4a;
-  color: #fff;
-  font-family: 'Georgia', serif;
-  font-size: 1rem;
-  box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
-}
-
-.login-form input::placeholder {
-  color: #cbbfe7;
-  opacity: 0.75;
-}
-
-.login-form button {
-  width: 100%;
-  background-color: #7e4fe7;
-}
-
-.login-form button:hover {
-  background-color: #9f6aff;
-}
-
-.login-toggle {
-  text-align: center;
-  margin-top: 1rem;
-  color: #ddd;
-  font-size: 0.95rem;
-  font-family: 'Georgia', serif;
-}
-
-.login-toggle button {
-  background: none;
-  border: none;
-  color: #9f6aff;
-  cursor: pointer;
-  font-weight: bold;
-  text-decoration: underline;
-  font-size: 1rem;
-  margin-left: 0.5rem;
 }

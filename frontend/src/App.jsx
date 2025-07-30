@@ -1,411 +1,128 @@
-import React, { useState, useEffect, useRef } from "react";
-import { auth, db } from "./firebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signOut
-} from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import React, { useState } from "react";
 
-const arcanosMaiores = ["O Louco", "O Mago", "A Sacerdotisa", "A Imperatriz", "O Imperador", "O Hierofante", "Os Enamorados", "O Carro", "A Força", "O Eremita", "A Roda da Fortuna", "A Justiça", "O Enforcado", "A Morte", "A Temperança", "O Diabo", "A Torre", "A Estrela", "A Lua", "O Sol", "O Julgamento", "O Mundo"];
-const naipes = ["Copas", "Ouros", "Espadas", "Paus"];
-const faces = ["Ás", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez", "Valete", "Cavaleiro", "Rainha", "Rei"];
-const arcanosMenores = naipes.flatMap(naipe => faces.map(face => `${face} de ${naipe}`));
-const baralhoCompleto = [...arcanosMaiores, ...arcanosMenores];
-
-const etapas = {
-  cruz_celta: { titulo: "Cruz Celta", cartas: 11, proxima: "etapa9" },
-  etapa9: { titulo: "Leitura de 9 cartas", cartas: 9, proxima: "etapa7" },
-  etapa7: { titulo: "Leitura de 7 cartas", cartas: 7, proxima: "etapa5" },
-  etapa5: { titulo: "Leitura de 5 cartas", cartas: 5, proxima: "etapa3" },
-  etapa3: { titulo: "Leitura Final de 3 cartas", cartas: 3, proxima: null }
-};
-
-export default function App() {
-  const [usuario, setUsuario] = useState(null);
-  const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [pagamento, setPagamento] = useState(false);
-  const [pixData, setPixData] = useState(null);
-  const [tarologo, setTarologo] = useState(null);
-  const [etapa, setEtapa] = useState("cruz_celta");
-  const [cartas, setCartas] = useState([]);
-  const [resposta, setResposta] = useState("");
-  const [carregando, setCarregando] = useState(false);
-  const [pergunta, setPergunta] = useState("");
-  const [perguntaConfirmada, setPerguntaConfirmada] = useState(false);
-  const [perguntasPorEtapa, setPerguntasPorEtapa] = useState({});
-  const interpretarRef = useRef(null);
-
-  /*useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      if (!user.emailVerified) {
-        alert("Por favor, verifique seu e-mail antes de continuar.");
-        await signOut(auth);
-        return;
-      }
-
-      setUsuario(user);
-      const ref = doc(db, "usuarios", user.uid);
-      const snap = await getDoc(ref);
-
-      if (snap.exists()) {
-        const dados = snap.data();
-        //setPagamento(dados.pagamento);
-        setPagamento(true); // ⚠️ força o pagamento como feito
-
-        if (dados.pagamento) {
-          const consultaRef = doc(db, "consultas", user.uid);
-          const consultaSnap = await getDoc(consultaRef);
-          if (consultaSnap.exists()) {
-            const leitura = consultaSnap.data();
-            setEtapa(leitura.etapa || "cruz_celta");
-            setCartas(leitura.cartas || []);
-            setPerguntasPorEtapa(leitura.perguntasPorEtapa || {});
-            setTarologo(leitura.tarologo || null);
-          }
-        }
-      } else {
-        await setDoc(ref, { email: user.email, pagamento: false });
-        setPagamento(false);
-      }
-    } else {
-      setUsuario(null);
-      setPagamento(false);
-    }
-  });
-  return () => unsubscribe();
-}, []);*/
-
-useEffect(() => {
-    // Wake up backend Render (warm-up)
-    fetch("https://taro-backend-2k9m.onrender.com/")
-  }, []);
-
-  useEffect(() => {
-    setUsuario({ email: "teste@local.com", uid: "teste123" });
-    setPagamento(true);
-    setTarologo(null);
-  }, []);
-
-useEffect(() => {
-  if (!pixData) return;
-
-  const intervalo = setInterval(async () => {
-    try {
-      const res = await fetch(`https://taro-backend-2k9m.onrender.com/verificar-pagamento/${pixData.id}`);
-      const data = await res.json();
-      if (data.status === "pago") {
-        setPagamento(true);
-        const ref = doc(db, "usuarios", usuario.uid);
-        await setDoc(ref, { pagamento: true }, { merge: true });
-        clearInterval(intervalo);
-      }
-    } catch (err) {
-      console.error("Erro ao verificar pagamento:", err);
-    }
-  }, 4000);
-
-  return () => clearInterval(intervalo);
-}, [pixData, usuario]);
-
-const etapaAtual = etapas[etapa];
-
-useEffect(() => {
-  if (
-    etapaAtual &&
-    cartas.length === etapaAtual.cartas &&
-    interpretarRef.current
-  ) {
-    const timer = setTimeout(() => {
-      interpretarRef.current.scrollIntoView({ behavior: 'smooth' });
-    }, 1500);
-
-    return () => clearTimeout(timer); // limpeza do timer caso algo mude antes
-  }
-}, [cartas, etapaAtual]);
-
-  const handleLogin = async () => {
-  try {
-    const cred = await signInWithEmailAndPassword(auth, email, senha);
-    if (!cred.user.emailVerified) {
-      alert("Por favor, verifique seu e-mail antes de continuar.");
-      await signOut(auth);
-    }
-  } catch (err) {
-    alert("Erro no login: " + err.message);
+const spreads = {
+  pathOfTheHeart: {
+    title: "Path of the Heart",
+    cards: 5,
+    description: "Explore emotions, hidden dynamics, and romantic outcomes.",
+    positions: [
+      "Your emotional state",
+      "Their feelings",
+      "Hidden influence",
+      "Spiritual advice",
+      "Likely outcome"
+    ]
+  },
+  threeCard: {
+    title: "Past, Present, Future",
+    cards: 3,
+    description: "A quick timeline snapshot of your situation.",
+    positions: ["Past", "Present", "Future"]
+  },
+  celticCross: {
+    title: "Celtic Cross",
+    cards: 10,
+    description: "A deep and traditional 10-card reading.",
+    positions: [
+      "The Present",
+      "The Challenge",
+      "The Subconscious Root",
+      "The Past",
+      "The Conscious Goal",
+      "The Near Future",
+      "Your Attitude",
+      "External Influences",
+      "Hopes and Fears",
+      "Final Outcome"
+    ]
   }
 };
 
-const handleCadastro = async () => {
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email, senha);
-    await sendEmailVerification(cred.user);
-    await setDoc(doc(db, "usuarios", cred.user.uid), {
-      email: cred.user.email,
-      pagamento: false,
-    });
-    alert("Cadastro realizado. Verifique seu e-mail antes de fazer login.");
-    setIsLogin(true);
-  } catch (err) {
-    alert("Erro no cadastro: " + err.message);
-  }
-};
+const majorArcana = [
+  "The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor",
+  "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit",
+  "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance",
+  "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"
+];
 
-const handleRecuperarSenha = async () => {
-  if (!email) {
-    alert("Digite seu e-mail para redefinir a senha.");
-    return;
-  }
-  try {
-    await sendPasswordResetEmail(auth, email);
-    alert("Um link de redefinição foi enviado para seu e-mail.");
-  } catch (err) {
-    alert("Erro ao enviar e-mail de redefinição: " + err.message);
-  }
-};
+const suits = ["Cups", "Pentacles", "Swords", "Wands"];
+const faces = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
+const minorArcana = suits.flatMap(suit => faces.map(face => `${face} of ${suit}`));
+const fullDeck = [...majorArcana, ...minorArcana];
 
-  
-  const embaralhar = () => [...baralhoCompleto].sort(() => 0.5 - Math.random());
+function shuffleDeck(deck) {
+  return [...deck].sort(() => Math.random() - 0.5);
+}
 
-  const gerarPagamento = async () => {
-  try {
-    const response = await fetch("https://taro-backend-2k9m.onrender.com/criar-pagamento", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: usuario.email, valor: 15 })
-    });
-    const data = await response.json();
-    console.log(setPixData(data));
-  } catch (err) {
-    alert("Erro ao gerar cobrança Pix");
-  }
-};
+export default function TarotApp() {
+  const [question, setQuestion] = useState("");
+  const [spreadKey, setSpreadKey] = useState("pathOfTheHeart");
+  const [drawnCards, setDrawnCards] = useState([]);
+  const [interpretation, setInterpretation] = useState("");
 
-
-  const puxarCarta = async () => {
-  if (cartas.length >= etapaAtual.cartas) return;
-  const deck = embaralhar().filter(c => !cartas.includes(c));
-  const novaCarta = deck[0];
-  const novasCartas = [...cartas, novaCarta];
-  setCartas(novasCartas);
-
-  await setDoc(doc(db, "consultas", usuario.uid), {
-    etapa,
-    cartas: novasCartas,
-    perguntasPorEtapa,
-    tarologo,
-    timestamp: new Date()
-  });
-};
-
-  const consultarTarologo = async () => {
-    setCarregando(true);
-    try {
-      const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pergunta: perguntasPorEtapa[etapa],
-          cartas,
-          etapa,
-          tarologo
-        })
-      });
-      const data = await response.json();
-      setResposta(data.mensagem);
-    } catch (error) {
-      setResposta("Erro ao consultar o tarólogo.");
-    } finally {
-      setCarregando(false);
-    }
+  const handleDrawCards = () => {
+    const spread = spreads[spreadKey];
+    const shuffled = shuffleDeck(fullDeck);
+    setDrawnCards(shuffled.slice(0, spread.cards));
+    setInterpretation("");
   };
 
-  const avancarEtapa = async () => {
-  const proxima = etapaAtual.proxima;
-  if (proxima) {
-    setEtapa(proxima);
-    setCartas([]);
-    setResposta("");
-    setPergunta("");
-    setPerguntaConfirmada(false);
-
-    await setDoc(doc(db, "consultas", usuario.uid), {
-      etapa: proxima,
-      cartas: [],
-      perguntasPorEtapa,
-      tarologo,
-      timestamp: new Date()
+  const handleInterpret = async () => {
+    const spread = spreads[spreadKey];
+    const res = await fetch("https://taro-backend-2k9m.onrender.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, cards: drawnCards, positions: spread.positions })
     });
-  } else {
-    alert("Sessão finalizada. Que os caminhos estejam abertos para você.");
-    setEtapa(null);
-    await setDoc(doc(db, "consultas", usuario.uid), {}); // zera
-  }
-};
+    const data = await res.json();
+    setInterpretation(data.message);
+  };
 
-
-  if (!usuario) {
-    return (
-      <div className="container">
-        <h1>Tarô Virtual</h1>
-        <h2>{isLogin ? "Login" : "Cadastro"}</h2>
-        <div className="login-form">
-          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-          <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} />
-          <button onClick={isLogin ? handleLogin : handleCadastro}>
-            {isLogin ? "Entrar" : "Cadastrar"}
-          </button>
-        </div>
-        <div className="login-toggle">
-          {isLogin ? "Não tem conta?" : "Já tem conta?"}
-          <button onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? " Cadastre-se" : " Faça login"}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!pagamento) {
-    return (
-      <div className="container">
-        <h1>Tarô Virtual</h1>
-        <p>Olá, {usuario?.email}. Para acessar sua leitura, realize o pagamento via Pix:</p>
-        {!pixData ? (
-          <button onClick={gerarPagamento}>Gerar cobrança Pix</button>
-        ) : (
-          <div className="pix-area">
-            <img
-              src={`data:image/png;base64,${pixData.pixImagem}`}
-              alt="QR Code Pix"
-              style={{ maxWidth: 250, marginBottom: 12 }}
-            />
-            <textarea
-              readOnly
-              value={pixData.pixQrCode}
-              rows={3}
-              style={{ width: "100%", marginBottom: 8 }}
-            />
-            <button onClick={() => navigator.clipboard.writeText(pixData.pixQrCode)}>
-              Copiar código Pix
-            </button>
-            <p style={{ marginTop: 12 }}><i>Aguardando confirmação do pagamento...</i></p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  if (!tarologo) {
-  
-    //<button onClick={() => setTarologo("clara")}>🔮 Maria Mercedes</button>
-    
-    return (
-      <div className="container">
-        <h1>Tarô Virtual</h1>
-        <p>Escolha seu tarólogo:</p>
-        <div className="tarologo-selector">
-          <button onClick={() => setTarologo("jaime")}>🌌 Jaime E. Cannes</button>
-          
-          <button onClick={() => setTarologo("felipe")}>🔮 Felipe E. Cannes</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!perguntaConfirmada) {
-    return (
-      <div className="container">
-        <h2>{tarologo.toUpperCase()}</h2>
-        <h3>{etapaAtual?.titulo || "Início"}</h3>
-        <p>Faça sua pergunta para esta etapa:</p>
-        <textarea
-          className="pergunta-textarea"
-          value={pergunta}
-          onChange={(e) => setPergunta(e.target.value)}
-          placeholder="Digite sua pergunta com contexto..."
-          rows={5}
-        />
-        <button className="iniciar-esquerda" onClick={async () => {
-        if (pergunta) {
-          const novaPergunta = { ...perguntasPorEtapa, [etapa]: pergunta };
-          setPerguntaConfirmada(true);
-          setPerguntasPorEtapa(novaPergunta);
-
-          await setDoc(doc(db, "consultas", usuario.uid), {
-            etapa,
-            cartas,
-            perguntasPorEtapa: novaPergunta,
-            tarologo,
-            timestamp: new Date()
-          });
-        }
-      }}>
-          Iniciar leitura
-        </button>
-      </div>
-    );
-  }
-
-  if (!etapaAtual) {
-    return (
-      <div className="container">
-        <h2>Sessão Encerrada</h2>
-        <p>Esperamos que as cartas tenham trazido sabedoria à sua jornada.</p>
-      </div>
-    );
-  }
+  const spread = spreads[spreadKey];
 
   return (
     <div className="container">
-      <div className="etapa-header">
-        <h2>{etapaAtual.titulo}</h2>
-        <p>Cartas selecionadas: {cartas.length} / {etapaAtual.cartas}</p>
-      </div>
+      <h1>🔮 Welcome to Your Tarot Reading</h1>
 
-      {cartas.length < etapaAtual.cartas && (
-        <div className="deck" onClick={puxarCarta}>
-          <div className="card-back">🔮</div>
-          <p>Clique para puxar uma carta</p>
-        </div>
-      )}
+      <label>Your question:</label>
+      <textarea
+        rows={3}
+        placeholder="Type your question here..."
+        value={question}
+        onChange={e => setQuestion(e.target.value)}
+      />
 
-      <div className="spread">
-        {[...cartas].reverse().map((carta) => (
-        <div key={carta} className="revealed-card">
-          <img src={`/cartas/${carta}.jpg`} alt={carta} />
-          <div>{carta}</div>
-        </div>
+      <label>Select a spread:</label>
+      <select value={spreadKey} onChange={e => setSpreadKey(e.target.value)}>
+        {Object.entries(spreads).map(([key, spread]) => (
+          <option key={key} value={key}>{spread.title}</option>
+        ))}
+      </select>
+
+      <p><i>{spread.description}</i></p>
+
+      <button onClick={handleDrawCards}>Draw Cards</button>
+
+      <div className="card-list">
+        {drawnCards.map((card, idx) => (
+          <div className="card" key={idx}>
+            <strong>{spread.positions[idx]}:</strong>
+            <img src={`/cards/${card}.jpg`} alt={card} />
+            <div>{card}</div>
+          </div>
         ))}
       </div>
 
-      {cartas.length === etapaAtual.cartas && !resposta && (
-      <button
-        ref={interpretarRef}
-        className="interpretar-btn"
-        onClick={consultarTarologo}
-        disabled={carregando}
-      >
-        {carregando ? "Consultando..." : "Interpretar Leitura"}
-      </button>
-    )}
+      {drawnCards.length === spread.cards && (
+        <button onClick={handleInterpret}>Interpret Reading</button>
+      )}
 
-
-      {resposta && (
-        <div className="resposta">
-          <h3>Interpretação:</h3>
-          <p>{resposta}</p>
-          <button onClick={avancarEtapa}>
-            {etapaAtual.proxima ? "Continuar para próxima etapa" : "Finalizar sessão"}
-          </button>
+      {interpretation && (
+        <div className="interpretation">
+          <h3>🔍 Interpretation:</h3>
+          <p>{interpretation}</p>
         </div>
       )}
     </div>
   );
-}
+} 
