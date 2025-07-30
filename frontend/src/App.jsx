@@ -24,7 +24,7 @@ export default function TarotApp() {
   const [drawnCards, setDrawnCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [interpretation, setInterpretation] = useState("");
-  const [currentCard, setCurrentCard] = useState(null);
+
   const defaultSpreads = {
     3: ["Past", "Present", "Future"],
     5: ["Situation", "Challenge", "Advice", "External Influence", "Outcome"],
@@ -50,27 +50,11 @@ export default function TarotApp() {
   };
 
   const drawCard = () => {
-    const nextCard = deck.find(card => !drawnCards.includes(card));
-    if (!nextCard) return;
+  const nextCard = deck.find(card => !drawnCards.includes(card));
+  if (!nextCard) return;
 
-    let count = 0;
-
-    const shuffleInterval = setInterval(() => {
-      const randomCard = fullDeck[Math.floor(Math.random() * fullDeck.length)];
-      setCurrentCard(randomCard);
-      count++;
-
-      if (count > 8) {
-        clearInterval(shuffleInterval);
-        setCurrentCard(nextCard);
-        setTimeout(() => {
-          setDrawnCards(prev => [...prev, nextCard]);
-          setCurrentCard(null); // limpa o destaque após enviar para lista
-        }, 600);
-      }
-    }, 100);
-  };
-
+  setDrawnCards(prev => [...prev, nextCard]);
+};
 
   const handleInterpret = async () => {
     setLoading(true);
