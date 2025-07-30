@@ -67,42 +67,6 @@ textarea::placeholder {
   color: #cbbfe7;
   opacity: 0.8;
 }
-.card-animation {
-  width: 100px;
-  height: 140px;
-  border-radius: 10px;
-  position: relative;
-  box-shadow: 0 0 30px rgba(198, 145, 255, 0.5);
-  background: linear-gradient(160deg, #4a318c, #7e4fe7);
-  overflow: hidden;
-}
-
-.card-animation::before {
-  content: '';
-  position: absolute;
-  width: 120%;
-  height: 100%;
-  background: url('/cartas/The_Star.jpg') center/cover;
-  opacity: 0.25;
-  animation: floatCard 2s ease-in-out infinite alternate;
-}
-
-@keyframes floatCard {
-  0% { transform: translateY(0); opacity: 0.25; }
-  100% { transform: translateY(-10px); opacity: 0.5; }
-}
-
-@keyframes slidePattern {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-10px); }
-}
-
-button {
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-}
-button:hover {
-  transform: scale(1.03);
-}
 
 /* Botões */
 button {
@@ -113,11 +77,23 @@ button {
   color: #fff;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   margin: 0.5rem auto;
   display: block;
   font-weight: bold;
 }
+
+button:hover {
+  background-color: #9f6aff;
+  box-shadow: 0 0 12px #d0a7ff;
+  transform: scale(1.03);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 button.loading {
   background-color: #9f6aff;
   box-shadow: 0 0 15px #dcbfff;
@@ -130,15 +106,7 @@ button.loading {
   100% { box-shadow: 0 0 12px #dcbfff; }
 }
 
-.card.animated {
-  animation: fadeIn 0.4s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* Select refinado */
 select {
   width: 100%;
   padding: 0.9rem 1rem;
@@ -159,30 +127,10 @@ select {
   background-repeat: no-repeat;
 }
 
-.card.animated {
-  animation: fadeInUp 0.4s ease-in-out;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-button:hover {
-  background-color: #9f6aff;
-  box-shadow: 0 0 12px #d0a7ff;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Deck animado */
+/* Deck visual (sem animação especial) */
 .deck {
   margin: 2rem auto;
   cursor: pointer;
-  animation: pulse 2.5s infinite;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -227,7 +175,7 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  animation: fadeIn 0.4s ease-in-out;
+  animation: fadeInUp 0.4s ease-in-out;
 }
 
 .card img {
@@ -279,15 +227,15 @@ button:disabled {
 }
 
 /* Animações */
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.03); opacity: 0.95; }
-  100% { transform: scale(1); opacity: 1; }
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 12px #dcbfff; }
+  50% { box-shadow: 0 0 24px #e8ccff; }
+  100% { box-shadow: 0 0 12px #dcbfff; }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Mobile */

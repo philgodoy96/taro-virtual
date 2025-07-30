@@ -119,7 +119,7 @@ export default function TarotApp() {
           <h2>✨ Click to draw your card</h2>
           {drawnCards.length < numCards && !currentCard && (
             <div className="deck" onClick={drawCard}>
-              <div className="card-animation" />
+              <div className="card-back">🔮</div>
               <p>Click to draw your card</p>
             </div>
           )}
