@@ -33,7 +33,7 @@ export default function TarotApp() {
   };
 
   const spread = {
-    positions: defaultSpreads[numCards] || Array(numCards).fill("Card")
+    positions: spread.positions.slice(0, drawnCards.length),
   };
 
 

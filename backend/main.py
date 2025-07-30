@@ -46,12 +46,11 @@ class ConsultaRequest(BaseModel):
     question: str
     cards: List[str]
     positions: List[str]
-    tarologo: str
 
 # Endpoint: interpret tarot reading
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
-    estilo = TAROLOGOS.get(data.tarologo, TAROLOGOS["clara"])
+    estilo = TAROLOGOS  # já é direto
 
     carta_posicional = "\n".join(
         [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
