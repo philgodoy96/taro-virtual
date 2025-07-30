@@ -69,12 +69,20 @@ export default function TarotApp() {
 
   const handleInterpret = async () => {
     const spread = spreads[spreadKey];
-    const res = await fetch("https://taro-backend-2k9m.onrender.com", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, cards: drawnCards, positions: spread.positions })
-    });
-    const data = await res.json();
+    const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      question,
+      cards: drawnCards,
+      positions: spread.positions,
+      tarologo: "clara" // ou qualquer nome que você tenha no backend
+    })
+  });
+
+  const data = await response.json(); // ✅ CORRETO
     setInterpretation(data.message);
   };
 
@@ -107,7 +115,7 @@ export default function TarotApp() {
         {drawnCards.map((card, idx) => (
           <div className="card" key={idx}>
             <strong>{spread.positions[idx]}:</strong>
-            <img src={`/cards/${card}.jpg`} alt={card} />
+            <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
             <div>{card}</div>
           </div>
         ))}
