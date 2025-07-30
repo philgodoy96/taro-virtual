@@ -25,10 +25,20 @@ export default function TarotApp() {
   const [loading, setLoading] = useState(false);
   const [interpretation, setInterpretation] = useState("");
   const [currentCard, setCurrentCard] = useState(null);
+  const defaultSpreads = {
+    3: ["Past", "Present", "Future"],
+    5: ["Situation", "Challenge", "Advice", "External Influence", "Outcome"],
+    7: ["You", "Obstacle", "Hidden Factor", "Advice", "Others", "Future", "Spiritual Insight"],
+    10: ["Present", "Challenge", "Subconscious", "Past", "Conscious", "Near Future", "You", "Environment", "Hopes/Fears", "Outcome"]
+  };
+
+  const spread = {
+    positions: defaultSpreads[numCards] || Array(numCards).fill("Card")
+  };
+
 
   useEffect(() => {
     fetch("https://taro-backend-2k9m.onrender.com/")
-      .then(() => console.log("🔥 Backend ready"))
       .catch(console.error);
   }, []);
 
@@ -40,11 +50,27 @@ export default function TarotApp() {
   };
 
   const drawCard = () => {
-    if (drawnCards.length < numCards) {
-      const nextCard = deck.find(card => !drawnCards.includes(card));
-      setDrawnCards([...drawnCards, nextCard]);
-    }
+    const nextCard = deck.find(card => !drawnCards.includes(card));
+    if (!nextCard) return;
+
+    let count = 0;
+
+    const shuffleInterval = setInterval(() => {
+      const randomCard = fullDeck[Math.floor(Math.random() * fullDeck.length)];
+      setCurrentCard(randomCard);
+      count++;
+
+      if (count > 8) {
+        clearInterval(shuffleInterval);
+        setCurrentCard(nextCard);
+        setTimeout(() => {
+          setDrawnCards(prev => [...prev, nextCard]);
+          setCurrentCard(null); // limpa o destaque após enviar para lista
+        }, 600);
+      }
+    }, 100);
   };
+
 
   const handleInterpret = async () => {
     setLoading(true);
