@@ -24,6 +24,7 @@ export default function TarotApp() {
   const [drawnCards, setDrawnCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [interpretation, setInterpretation] = useState("");
+  const [currentCard, setCurrentCard] = useState(null);
 
   useEffect(() => {
     fetch("https://taro-backend-2k9m.onrender.com/")
@@ -90,21 +91,30 @@ export default function TarotApp() {
       {stage === "draw" && (
         <div className="draw-phase">
           <h2>✨ Click to draw your card</h2>
-          {drawnCards.length < numCards && (
-            <div className="deck" onClick={drawCard}>
+          {drawnCards.length < numCards && !currentCard && (
+            <div className="deck" onClick={handleDrawCard}>
               <div className="card-back">🔮</div>
-              <p>Click the deck</p>
+              <p>Click to draw your card</p>
             </div>
           )}
 
           <div className="card-list">
             {drawnCards.map((card, idx) => (
-              <div className="card" key={idx}>
-                <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
-                <div>{card}</div>
-              </div>
-            ))}
+            <div className="card" key={idx}>
+              <strong>{spread.positions[idx]}</strong> {/* ← título simbólico */}
+              <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
+              <div>{card}</div>
+            </div>
+          ))}
           </div>
+
+          {currentCard && (
+            <div className="card animated">
+              <strong>{spread.positions[drawnCards.length]}</strong>
+              <img src={`/cartas/${encodeURIComponent(currentCard)}.jpg`} alt={currentCard} />
+              <div>{currentCard}</div>
+            </div>
+          )}
 
           {drawnCards.length === numCards && !interpretation && (
             <button
