@@ -59,6 +59,7 @@ export default function TarotApp() {
   const [spreadKey, setSpreadKey] = useState("pathOfTheHeart");
   const [drawnCards, setDrawnCards] = useState([]);
   const [interpretation, setInterpretation] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleDrawCards = () => {
     const spread = spreads[spreadKey];
@@ -67,24 +68,44 @@ export default function TarotApp() {
     setInterpretation("");
   };
 
-  const handleInterpret = async () => {
-    const spread = spreads[spreadKey];
-    const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      question,
-      cards: drawnCards,
-      positions: spread.positions,
-      tarologo: "clara" // ou qualquer nome que você tenha no backend
-    })
-  });
+  useEffect(() => {
+    fetch("https://taro-backend-2k9m.onrender.com/")
+      .then(res => console.log("🔥 Backend woke up!"))
+      .catch(err => console.error("Erro ao acordar backend:", err));
+  }, []);
 
-  const data = await response.json(); // ✅ CORRETO
+  const handleInterpret = async () => {
+  const spread = spreads[spreadKey];
+  setLoading(true); // INÍCIO
+
+  try {
+    const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question,
+        cards: drawnCards,
+        positions: spread.positions,
+        tarologo: "clara"
+      })
+    });
+
+    if (!response.ok) {
+      console.error("Error:", await response.text());
+      alert("❌ Failed to interpret.");
+      return;
+    }
+
+    const data = await response.json();
     setInterpretation(data.message);
-  };
+  } catch (error) {
+    console.error("Network error:", error);
+    alert("Network error.");
+  } finally {
+    setLoading(false); // FIM
+  }
+};
+
 
   const spread = spreads[spreadKey];
 
@@ -122,8 +143,10 @@ export default function TarotApp() {
       </div>
 
       {drawnCards.length === spread.cards && (
-        <button onClick={handleInterpret}>Interpret Reading</button>
-      )}
+      <button onClick={handleInterpret} disabled={loading}>
+        {loading ? "Interpreting..." : "Interpret Reading"}
+      </button>
+    )}
 
       {interpretation && (
         <div className="interpretation">
