@@ -95,7 +95,7 @@ const spread = {
       {stage === "welcome" && (
         <div className="welcome">
           <h1>🔮 Welcome to Your Tarot Reading</h1>
-          <p><em>What’s been on your heart lately?</em></p>
+          <p className="subtitle"><em>What’s been on your heart lately?</em></p>
           <textarea value={question} onChange={e => setQuestion(e.target.value)} rows={3} />
 
           <label>How many cards do you want to draw?</label>
