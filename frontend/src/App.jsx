@@ -98,7 +98,7 @@ const spread = {
           <p className="subtitle"><em>What’s been on your heart lately?</em></p>
           <textarea value={question} onChange={e => setQuestion(e.target.value)} rows={3} />
 
-          <label>How many cards do you want to draw?</label>
+          <label className="subtitle">How many cards do you want to draw?</label>
           <select value={numCards} onChange={e => setNumCards(parseInt(e.target.value))}>
             {[3, 5, 7, 10].map(n => <option key={n} value={n}>{n} cards</option>)}
           </select>
