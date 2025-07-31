@@ -16,7 +16,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://virtualtarot.vercel.app"],
+    allow_origins=[
+    "https://virtualtarot.vercel.app",
+    "http://localhost:3000",  # Se estiver testando local
+    "https://www.virtualtarot.vercel.app"
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
