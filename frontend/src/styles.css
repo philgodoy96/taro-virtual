@@ -52,13 +52,13 @@ h3 { font-size: 1.4rem; }
 
 .subtitle {
   font-family: 'Georgia', serif;
-  color: #cdbff2;
+  color: #e3d0ff;
   text-align: center;
   opacity: 0.95;
 }
 
-@media (min-width: 768px) {
-  .subtitle {
+@media (min-width: 800px) {
+  p.subtitle {
     font-size: 1.3rem;
   }
 }
