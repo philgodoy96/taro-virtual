@@ -18,7 +18,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "https://virtualtarot.vercel.app",
-    "http://localhost:3000",  # Se estiver testando local
+    "http://localhost:3000", 
     "https://www.virtualtarot.vercel.app"
 ],
     allow_credentials=True,
@@ -54,44 +54,49 @@ class ConsultaRequest(BaseModel):
 
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
-    estilo = TAROLOGOS
+    try:
+        estilo = TAROLOGOS
 
-    carta_posicional = "\n".join(
-        [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
-    )
-
-    prompt = PromptTemplate(
-    input_variables=["question", "card_positional"],
-    template=f"""{estilo['prompt']}
-
-        You are now conducting a deeply intuitive tarot session. Let each card speak — not only through meaning, but through energy, archetype, and connection.
-
-        The querent has asked a question of the heart:
-
-        Question: \"{{question}}\"  
-
-        The cards drawn and their positions in the spread:
-
-        {{card_positional}}
-
-        🔮 Guidance for the reading:
-        - Speak symbolically, weaving each card into a poetic and emotional narrative.
-        - Honor the position of each card — what it reveals, what it conceals.
-        - Interpret with intuition and empathy, as a seasoned reader would.
-        - Avoid generic phrasing or mechanical tone.
-        - No need to “wrap up” the session — just offer insight, as if you're pausing mid-oracle.
-
-        Deliver a reading that feels personal, rich, and soul-stirring — like the words of a trusted spiritual guide.
-        """
+        carta_posicional = "\n".join(
+            [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
         )
 
-    chain = LLMChain(llm=llm, prompt=prompt)
-    resposta = chain.run(
-        question=data.question,
-        card_positional=carta_posicional
-    )
+        prompt = PromptTemplate(
+            input_variables=["question", "card_positional"],
+            template=f"""{estilo['prompt']}
 
-    return {"message": resposta.strip()}
+You are now conducting a deeply intuitive tarot session. Let each card speak — not only through meaning, but through energy, archetype, and connection.
+
+The querent has asked a question of the heart:
+
+Question: \"{{question}}\"  
+
+The cards drawn and their positions in the spread:
+
+{{card_positional}}
+
+🔮 Guidance for the reading:
+- Speak symbolically, weaving each card into a poetic and emotional narrative.
+- Honor the position of each card — what it reveals, what it conceals.
+- Interpret with intuition and empathy, as a seasoned reader would.
+- Avoid generic phrasing or mechanical tone.
+- No need to “wrap up” the session — just offer insight, as if you're pausing mid-oracle.
+
+Deliver a reading that feels personal, rich, and soul-stirring — like the words of a trusted spiritual guide.
+"""
+        )
+
+        chain = LLMChain(llm=llm, prompt=prompt)
+        resposta = chain.run(
+            question=data.question,
+            card_positional=carta_posicional
+        )
+
+        return {"message": resposta.strip()}
+
+    except Exception as e:
+        print("🔥 Erro interno:", e)
+        raise HTTPException(status_code=500, detail=f"Erro ao processar leitura: {str(e)}")
 
 @app.get("/")
 def wake_up():
