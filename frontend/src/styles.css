@@ -75,7 +75,7 @@ h3 { font-size: 1.4rem; }
   width: 100%;
   padding: 1.2rem;
   font-size: 0.9rem;
-  line-height: 1.4rem;
+  line-height: 1.3rem;
   border-radius: 10px;
   background-color: #2d1d4a;
   color: #fff;
@@ -85,7 +85,7 @@ h3 { font-size: 1.4rem; }
   font-family: 'Georgia', serif;
   outline: none;
   resize:none;
-  min-height: 140px;
+  min-height: 150px;
 }
 
 .welcome select {
