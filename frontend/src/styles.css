@@ -63,7 +63,7 @@ h3 { font-size: 1.4rem; }
   }
 
   label.subtitle{
-    font-size:1rem;
+    font-size:1.18rem;
   }
 }
 
@@ -84,24 +84,28 @@ h3 { font-size: 1.4rem; }
 }
 
 .welcome select {
+  /* mantém o estilo da caixa */
   width: 100%;
-  padding: 1rem;
-  font-size: 0.95rem;
-  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  font-family: 'Georgia', serif;
   background-color: #2d1d4a;
   color: #fff;
   border: none;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
   box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
-  font-family: 'Georgia', serif;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   outline: none;
-  background-image: linear-gradient(45deg, #7e4fe7 10%, transparent 10%), 
-                    linear-gradient(135deg, #7e4fe7 10%, transparent 10%);
-  background-position: right 1rem top 50%, right 1.5rem top 50%;
-  background-size: 0.65em 0.65em;
+
+  /* 🔥 remove a setinha manual */
+  background-image: none !important;
+  background-position: initial !important;
+  background-size: initial !important;
   background-repeat: no-repeat;
+  padding-right: 1rem;
 }
 
 textarea::placeholder {
