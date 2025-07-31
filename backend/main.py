@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
-from langchain_community.llms import OpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from fastapi.responses import JSONResponse
@@ -39,7 +39,7 @@ Let your voice feel like a velvet robe and a candlelit room. Offer clarity like 
 """
 }
 
-llm = OpenAI(
+llm = ChatOpenAI(
     model="gpt-4o",
     temperature=0.85,
     max_tokens=1200,
@@ -54,10 +54,6 @@ class ConsultaRequest(BaseModel):
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
     try:
-        print("📩 Recebido:")
-        print("question:", data.question)
-        print("cards:", data.cards)
-        print("positions:", data.positions)
 
         if not data.question.strip():
             raise HTTPException(status_code=422, detail="A pergunta não pode estar vazia.")
@@ -72,26 +68,26 @@ def consultar_taro(data: ConsultaRequest):
             input_variables=["question", "card_positional"],
             template=f"""{TAROLOGOS['prompt']}
 
-You are now conducting a deeply intuitive tarot session. Let each card speak — not only through meaning, but through energy, archetype, and connection.
+            You are now conducting a deeply intuitive tarot session. Let each card speak — not only through meaning, but through energy, archetype, and connection.
 
-The querent has asked a question of the heart:
+            The querent has asked a question of the heart:
 
-Question: "{{question}}"  
+            Question: "{{question}}"  
 
-The cards drawn and their positions in the spread:
+            The cards drawn and their positions in the spread:
 
-{{card_positional}}
+            {{card_positional}}
 
-🔮 Guidance for the reading:
-- Speak symbolically, weaving each card into a poetic and emotional narrative.
-- Honor the position of each card — what it reveals, what it conceals.
-- Interpret with intuition and empathy, as a seasoned reader would.
-- Avoid generic phrasing or mechanical tone.
-- No need to “wrap up” the session — just offer insight, as if you're pausing mid-oracle.
+            🔮 Guidance for the reading:
+            - Speak symbolically, weaving each card into a poetic and emotional narrative.
+            - Honor the position of each card — what it reveals, what it conceals.
+            - Interpret with intuition and empathy, as a seasoned reader would.
+            - Avoid generic phrasing or mechanical tone.
+            - No need to “wrap up” the session — just offer insight, as if you're pausing mid-oracle.
 
-Deliver a reading that feels personal, rich, and soul-stirring — like the words of a trusted spiritual guide.
-"""
-        )
+            Deliver a reading that feels personal, rich, and soul-stirring — like the words of a trusted spiritual guide.
+            """
+                    )
 
         print("🧠 Prompt final gerado:")
         print(prompt.format(question=data.question, card_positional=carta_posicional))
