@@ -27,10 +27,14 @@ app.add_middleware(
 
 TAROLOGOS = {
     "prompt": """
-        You are an intuitive, soulful tarot reader — poetic yet grounded, mystical yet human. Your words feel like sacred storytelling, drawn from ancient symbols and quiet wisdom.
-        You read not just the cards, but the silence between them. Each interpretation is a small healing, not just an answer. Speak with warmth, depth, and grace — like someone who sees patterns in dreams and truths in metaphors. Never generic, never mechanical. You're not here to impress — you're here to touch. Avoid clichés. Instead, trust the beauty of language and the truth inside each archetype. Let your voice feel like a velvet robe and a candlelit room. Offer clarity like a mirror, not a sermon.
-"""
-}
+        You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
+
+        You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.
+
+        Always adapt your tone to the question. Be real, be kind, be clear.
+
+        """
+        }
 
 llm = ChatOpenAI(
     model="gpt-4o",
@@ -47,6 +51,11 @@ class ConsultaRequest(BaseModel):
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
     try:
+        # ✅ Log básico
+        print("📩 Recebido:")
+        print("❓ Pergunta:", data.question)
+        print("🃏 Cartas:", data.cards)
+        print("📌 Posições:", data.positions)
 
         if not data.question.strip():
             raise HTTPException(status_code=422, detail="A pergunta não pode estar vazia.")
@@ -58,22 +67,26 @@ def consultar_taro(data: ConsultaRequest):
         )
 
         prompt = PromptTemplate(
-            input_variables=["question", "card_positional"],
-            template=f"""{TAROLOGOS['prompt']}
+    input_variables=["question", "card_positional"],
+    template=f"""{TAROLOGOS['prompt']}
 
-            You are now conducting a deeply intuitive tarot session. Let each card speak — not only through meaning, but through energy, archetype, and connection.
-            The querent has asked a question of the heart:
-            Question: "{{question}}"  
-            The cards drawn and their positions in the spread:
-            {{card_positional}}
+The querent has asked you something important:
 
-            🔮 Guidance for the reading:
-            Let the interpretation unfold as a single, flowing message — without headers, bullet points, or card titles. Weave the meaning of each card naturally into a poetic narrative. Do not label the cards directly; instead, let their influence emerge through tone, emotion, and imagery. Avoid structural formatting like "**Advice — Card Name:**". Make it sound like a meditation or a conversation — smooth, soulful, and continuous.Let your words feel like they come from intuition, not from analysis.
-            """
-                    )
+Question: "{{question}}"
 
-        print("🧠 Prompt final gerado:")
-        print(prompt.format(question=data.question, card_positional=carta_posicional))
+These are the cards drawn and their positions:
+
+{{card_positional}}
+
+🎯 Your task:
+
+Speak to the seeker like a close, grounded friend who knows the cards well. Let your interpretation flow naturally — as if you were explaining what you feel from the cards, not giving a performance. Avoid formal structure, headers, or formatting tricks. No "**Advice — Card Name:**" style.
+
+Bring empathy, clarity, and personality. You don't need to be poetic — just intuitive, thoughtful, and real.
+
+If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
+"""
+)
 
         chain = LLMChain(llm=llm, prompt=prompt)
         resposta = chain.run(
@@ -85,7 +98,7 @@ def consultar_taro(data: ConsultaRequest):
         return {"message": resposta.strip()}
 
     except HTTPException as http_err:
-        raise http_err  # Deixa o código de erro correto chegar ao frontend
+        raise http_err
     except Exception as e:
         print("🔥 Erro interno:", e)
         raise HTTPException(status_code=500, detail=f"Erro ao processar leitura: {str(e)}")
