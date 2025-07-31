@@ -251,7 +251,7 @@ button.loading {
 
 .interpretation h3 {
   font-size: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.4rem;
   color: #fff3ff;
   text-align: center;
 }
@@ -262,7 +262,7 @@ button.loading {
   line-height: 1.65;
   color: #f6f0ff;
   text-align: justify;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.9rem;
 }
 
 @keyframes fadeInUp {
