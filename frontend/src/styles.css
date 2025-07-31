@@ -188,44 +188,60 @@ button.loading {
   margin-bottom: 1.5rem;
 }
 
-.card {
+/* 🟣 NOVO LAYOUT DAS CARTAS */
+
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 16px;
+  justify-items: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
   background: #2e1e49;
   border: 1px solid #8057c3;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(140, 100, 255, 0.2);
-  text-align: center;
+
   width: 130px;
-  height: 230px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  height: 240px;
   padding: 0.5rem;
+  text-align: center;
 }
 
-.card strong {
-  height: 15%;
+.card-title {
+  flex: 0 0 15%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-weight: bold;
+  font-size: 0.88rem;
   color: #f0e9ff;
+  text-align: center;
 }
 
-.card img {
-  height: 70%;
-  width: auto;
+.card-image {
+  flex: 0 0 70%;
   max-height: 100%;
+  width: auto;
   object-fit: contain;
 }
 
-.card div {
-  height: 15%;
+.card-name {
+  flex: 0 0 15%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   color: #f0e9ff;
+  text-align: center;
 }
 
 .interpretation {

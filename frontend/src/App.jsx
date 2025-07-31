@@ -123,10 +123,10 @@ const spread = {
       {(stage === "draw" || stage === "result") && (
         <div className="card-list">
           {[...drawnCards].reverse().map((card, idx) => (
-            <div className="card" key={card}>
-              <strong>{spread.positions[drawnCards.length - 1 - idx]}</strong>
-              <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
-              <div>{card}</div>
+            <div className="card-box" key={card}>
+              <div className="card-title">{spread.positions[drawnCards.length - 1 - idx]}</div>
+              <img className="card-image" src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
+              <div className="card-name">{card}</div>
             </div>
           ))}
         </div>
