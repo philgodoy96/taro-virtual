@@ -79,9 +79,8 @@ h3 { font-size: 1.4rem; }
   box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
   font-family: 'Georgia', serif;
   outline: none;
+  resize:none;
   min-height: 140px;
-  resize: none;
-}
 }
 
 .welcome select {
@@ -98,9 +97,11 @@ h3 { font-size: 1.4rem; }
   font-family: 'Georgia', serif;
   appearance: none;
   outline: none;
-  -moz-appearance: none;
-  background: none;
-  padding-right: 1rem;
+  background-image: linear-gradient(45deg, #7e4fe7 10%, transparent 10%), 
+                    linear-gradient(135deg, #7e4fe7 10%, transparent 10%);
+  background-position: right 1rem top 50%, right 1.5rem top 50%;
+  background-size: 0.65em 0.65em;
+  background-repeat: no-repeat;
 }
 
 textarea::placeholder {
