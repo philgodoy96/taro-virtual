@@ -1,4 +1,7 @@
-/* Reset básico */
+html, body {
+  overflow-x: hidden;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -14,7 +17,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* Container */
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -26,7 +28,6 @@ body {
   box-shadow: 0 0 30px rgba(140, 100, 255, 0.2);
 }
 
-/* Títulos */
 h1, h2, h3 {
   font-family: 'Cinzel Decorative', cursive;
   color: #e3d0ff;
@@ -43,7 +44,6 @@ h3 { font-size: 1.4rem; }
   font-size: 1.1rem;
 }
 
-/* Welcome screen */
 .welcome {
   text-align: center;
   animation: fadeIn 1s ease-in-out;
@@ -53,7 +53,7 @@ h3 { font-size: 1.4rem; }
 .welcome select {
   width: 100%;
   padding: 1rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   border-radius: 10px;
   background-color: #2d1d4a;
   color: #fff;
@@ -75,7 +75,6 @@ textarea::placeholder {
   opacity: 0.8;
 }
 
-/* Botões */
 button {
   padding: 0.75rem 1.5rem;
   font-size: 1.05rem;
@@ -113,7 +112,6 @@ button.loading {
   100% { box-shadow: 0 0 12px #dcbfff; }
 }
 
-/* Select refinado */
 select {
   width: 100%;
   padding: 0.9rem 1rem;
@@ -134,7 +132,6 @@ select {
   background-repeat: no-repeat;
 }
 
-/* Deck visual (sem animação especial) */
 .deck {
   margin: 2rem auto;
   cursor: pointer;

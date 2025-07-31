@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const fullDeck = (() => {
   const major = [
@@ -23,6 +23,7 @@ export default function TarotApp() {
   const [drawnCards, setDrawnCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [interpretation, setInterpretation] = useState("");
+  const interpretRef = useRef(null);
 
  const defaultSpreads = {
   3: ["Past", "Present", "Future"],
@@ -51,8 +52,19 @@ const spread = {
   const nextCard = deck.find(card => !drawnCards.includes(card));
   if (!nextCard) return;
 
-  setDrawnCards(prev => [...prev, nextCard]);
+  setDrawnCards(prev => {
+    const updated = [...prev, nextCard];
+
+     if (updated.length === numCards) {
+      setTimeout(() => {
+        interpretRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 2000);
+    }
+
+    return updated;
+  });
 };
+
 
   const handleInterpret = async () => {
     setLoading(true);
@@ -83,8 +95,7 @@ const spread = {
       {stage === "welcome" && (
         <div className="welcome">
           <h1>🔮 Welcome to Your Tarot Reading</h1>
-          <p>Close your eyes, take a breath, and focus on your question...</p>
-          <label>Your question:</label>
+          <p><em>What’s been on your heart lately?</em></p>
           <textarea value={question} onChange={e => setQuestion(e.target.value)} rows={3} />
 
           <label>How many cards do you want to draw?</label>
@@ -112,7 +123,7 @@ const spread = {
       {(stage === "draw" || stage === "result") && (
         <div className="card-list">
           {[...drawnCards].reverse().map((card, idx) => (
-            <div className="card" key={idx}>
+            <div className="card" key={card}>
               <strong>{spread.positions[drawnCards.length - 1 - idx]}</strong>
               <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
               <div>{card}</div>
@@ -123,6 +134,7 @@ const spread = {
 
        {drawnCards.length === numCards && !interpretation && (
             <button
+              ref={interpretRef}
               onClick={handleInterpret}
               disabled={loading}
               className={loading ? "loading" : ""}
