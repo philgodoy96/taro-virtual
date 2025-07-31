@@ -106,15 +106,7 @@ const spread = {
               <p>Click to draw your card</p>
             </div>
           )}
-          {drawnCards.length === numCards && !interpretation && (
-            <button
-              onClick={handleInterpret}
-              disabled={loading}
-              className={loading ? "loading" : ""}
-            >
-              {loading ? "Interpreting..." : "Interpret Reading"}
-            </button>
-          )}
+         
         </div>
       )}
 
@@ -130,6 +122,16 @@ const spread = {
           ))}
         </div>
       )}
+
+       {drawnCards.length === numCards && !interpretation && (
+            <button
+              onClick={handleInterpret}
+              disabled={loading}
+              className={loading ? "loading" : ""}
+            >
+              {loading ? "Interpreting..." : "Interpret Reading"}
+            </button>
+          )}
 
       {stage === "result" && (
         <div className="interpretation">
