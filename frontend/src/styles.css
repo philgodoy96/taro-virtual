@@ -84,7 +84,6 @@ h3 { font-size: 1.4rem; }
 }
 
 .welcome select {
-  /* mantém o estilo da caixa */
   width: 100%;
   padding: 0.9rem 1rem;
   font-size: 1rem;
@@ -99,8 +98,7 @@ h3 { font-size: 1.4rem; }
   -webkit-appearance: none;
   -moz-appearance: none;
   outline: none;
-
-  /* 🔥 remove a setinha manual */
+  margin-top:1rem;
   background-image: none !important;
   background-position: initial !important;
   background-size: initial !important;
