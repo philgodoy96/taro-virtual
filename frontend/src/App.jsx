@@ -1,4 +1,3 @@
-// TarotApp.jsx — Nova estrutura com fluxo dividido por etapas (Welcome, Draw, Result)
 import React, { useState, useEffect } from "react";
 
 const fullDeck = (() => {
@@ -110,12 +109,11 @@ const spread = {
         </div>
       )}
 
-      {/* Mostrar cartas sorteadas em qualquer estágio (draw ou result) */}
       {(stage === "draw" || stage === "result") && (
         <div className="card-list">
-          {drawnCards.map((card, idx) => (
+          {[...drawnCards].reverse().map((card, idx) => (
             <div className="card" key={idx}>
-              <strong>{spread.positions[idx]}</strong>
+              <strong>{spread.positions[drawnCards.length - 1 - idx]}</strong>
               <img src={`/cartas/${encodeURIComponent(card)}.jpg`} alt={card} />
               <div>{card}</div>
             </div>
