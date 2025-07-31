@@ -103,7 +103,13 @@ const spread = {
             {[3, 5, 7, 10].map(n => <option key={n} value={n}>{n} cards</option>)}
           </select>
 
-          <button onClick={startReading}>Start Reading</button>
+          <button 
+            onClick={startReading} 
+            disabled={!question.trim()}
+          >
+            Start Reading
+          </button>
+
         </div>
       )}
 

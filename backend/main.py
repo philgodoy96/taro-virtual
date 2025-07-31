@@ -54,16 +54,15 @@ class ConsultaRequest(BaseModel):
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
     try:
-        # 📩 Log dos dados recebidos
         print("📩 Recebido:")
         print("question:", data.question)
         print("cards:", data.cards)
         print("positions:", data.positions)
 
-        if not data.question or not data.cards or not data.positions:
-            raise HTTPException(status_code=400, detail="Todos os campos são obrigatórios.")
-
-        estilo = TAROLOGOS
+        if not data.question.strip():
+            raise HTTPException(status_code=422, detail="A pergunta não pode estar vazia.")
+        if not data.cards or not data.positions:
+            raise HTTPException(status_code=422, detail="Cartas e posições são obrigatórias.")
 
         carta_posicional = "\n".join(
             [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
@@ -71,7 +70,7 @@ def consultar_taro(data: ConsultaRequest):
 
         prompt = PromptTemplate(
             input_variables=["question", "card_positional"],
-            template=f"""{estilo['prompt']}
+            template=f"""{TAROLOGOS['prompt']}
 
 You are now conducting a deeply intuitive tarot session. Let each card speak — not only through meaning, but through energy, archetype, and connection.
 
@@ -94,7 +93,6 @@ Deliver a reading that feels personal, rich, and soul-stirring — like the word
 """
         )
 
-        # 🧠 Ver prompt final gerado
         print("🧠 Prompt final gerado:")
         print(prompt.format(question=data.question, card_positional=carta_posicional))
 
@@ -105,9 +103,10 @@ Deliver a reading that feels personal, rich, and soul-stirring — like the word
         )
 
         print("🔁 Resposta da LLM:", resposta)
-
         return {"message": resposta.strip()}
 
+    except HTTPException as http_err:
+        raise http_err  # Deixa o código de erro correto chegar ao frontend
     except Exception as e:
         print("🔥 Erro interno:", e)
         raise HTTPException(status_code=500, detail=f"Erro ao processar leitura: {str(e)}")
