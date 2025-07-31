@@ -75,6 +75,7 @@ h3 { font-size: 1.4rem; }
   width: 100%;
   padding: 1.2rem;
   font-size: 0.9rem;
+  line-height: 1.05rem;
   border-radius: 10px;
   background-color: #2d1d4a;
   color: #fff;
@@ -262,7 +263,11 @@ button.loading {
   line-height: 1.65;
   color: #f6f0ff;
   text-align: justify;
-  margin-bottom: 1.9rem;
+  margin-bottom: 1rem;
+}
+
+.interpretation button{
+  margin-top:0.8rem;
 }
 
 @keyframes fadeInUp {

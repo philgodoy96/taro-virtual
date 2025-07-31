@@ -23,18 +23,20 @@ export default function TarotApp() {
   const [drawnCards, setDrawnCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [interpretation, setInterpretation] = useState("");
+
   const interpretRef = useRef(null);
+  const interpretationRef = useRef(null);
 
- const defaultSpreads = {
-  3: ["Past", "Present", "Future"],
-  5: ["Situation", "Challenge", "Advice", "External Influence", "Outcome"],
-  7: ["You", "Obstacle", "Hidden Factor", "Advice", "Others", "Future", "Spiritual Insight"],
-  10: ["Present", "Challenge", "Subconscious", "Past", "Conscious", "Near Future", "You", "Environment", "Hopes/Fears", "Outcome"]
-};
+  const defaultSpreads = {
+    3: ["Past", "Present", "Future"],
+    5: ["Situation", "Challenge", "Advice", "External Influence", "Outcome"],
+    7: ["You", "Obstacle", "Hidden Factor", "Advice", "Others", "Future", "Spiritual Insight"],
+    10: ["Present", "Challenge", "Subconscious", "Past", "Conscious", "Near Future", "You", "Environment", "Hopes/Fears", "Outcome"]
+  };
 
-const spread = {
-  positions: defaultSpreads[numCards] || Array(numCards).fill("Card")
-};
+  const spread = {
+    positions: defaultSpreads[numCards] || Array(numCards).fill("Card")
+  };
 
   useEffect(() => {
     fetch("https://taro-backend-2k9m.onrender.com/")
@@ -49,22 +51,21 @@ const spread = {
   };
 
   const drawCard = () => {
-  const nextCard = deck.find(card => !drawnCards.includes(card));
-  if (!nextCard) return;
+    const nextCard = deck.find(card => !drawnCards.includes(card));
+    if (!nextCard) return;
 
-  setDrawnCards(prev => {
-    const updated = [...prev, nextCard];
+    setDrawnCards(prev => {
+      const updated = [...prev, nextCard];
 
-     if (updated.length === numCards) {
-      setTimeout(() => {
-        interpretRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 2000);
-    }
+      if (updated.length === numCards) {
+        setTimeout(() => {
+          interpretRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 2000);
+      }
 
-    return updated;
-  });
-};
-
+      return updated;
+    });
+  };
 
   const handleInterpret = async () => {
     setLoading(true);
@@ -79,9 +80,15 @@ const spread = {
           tarologo: ""
         })
       });
+
       const data = await response.json();
       setInterpretation(data.message);
       setStage("result");
+
+      setTimeout(() => {
+        interpretationRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+
     } catch (err) {
       alert("Error during interpretation");
       console.error(err);
@@ -109,7 +116,6 @@ const spread = {
           >
             Start Reading
           </button>
-
         </div>
       )}
 
@@ -122,7 +128,6 @@ const spread = {
               <p>Click to draw your card</p>
             </div>
           )}
-         
         </div>
       )}
 
@@ -138,33 +143,32 @@ const spread = {
         </div>
       )}
 
-       {drawnCards.length === numCards && !interpretation && (
-            <button
-              ref={interpretRef}
-              onClick={handleInterpret}
-              disabled={loading}
-              className={loading ? "loading" : ""}
-            >
-              {loading ? "Interpreting..." : "Interpret Reading"}
-            </button>
-          )}
+      {drawnCards.length === numCards && !interpretation && (
+        <button
+          ref={interpretRef}
+          onClick={handleInterpret}
+          disabled={loading}
+          className={loading ? "loading" : ""}
+        >
+          {loading ? "Interpreting..." : "Interpret Reading"}
+        </button>
+      )}
 
       {stage === "result" && (
-        <div className="interpretation">
+        <div className="interpretation" ref={interpretationRef}>
           <h3>🔍 Interpretation:</h3>
           <p>{interpretation}</p>
 
-        <button onClick={() => {
-        setStage("welcome");
-        setQuestion("");
-        setInterpretation("");
-        setDrawnCards([]);
-      }}>
-        🔁 Return to Reading
-      </button>
-
+          <button onClick={() => {
+            setStage("welcome");
+            setQuestion("");
+            setInterpretation("");
+            setDrawnCards([]);
+          }}>
+            🔁 Return to Reading
+          </button>
         </div>
       )}
     </div>
   );
-} 
+}
