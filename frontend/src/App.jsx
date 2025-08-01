@@ -125,7 +125,7 @@ export default function TarotApp() {
           {drawnCards.length < numCards && (
             <div className="deck" onClick={drawCard}>
               <div className="card-back">🔮</div>
-              <p>Tap the deck</p>
+              <p>Tap the deck to draw</p>
             </div>
           )}
         </div>
