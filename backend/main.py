@@ -33,7 +33,7 @@ TAROLOGOS = {
 }
 
 # Atualizando a URL para o modelo Mistral 7B
-HF_API_URL = "https://api-inference.huggingface.co/models/mistral-7B"
+HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
 HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 class ConsultaRequest(BaseModel):
@@ -54,17 +54,16 @@ def make_huggingface_request(prompt: str) -> str:
     try:
         response = requests.post(HF_API_URL, headers=headers, json=data)
         print(f"Status Code: {response.status_code}")
-        print(f"Response Text: {response.text}")  # Adicionando para imprimir o texto completo da resposta
+        print(f"Response Text: {response.text}")  # Para debugar o retorno completo
 
         if response.status_code == 200:
             return response.json()[0].get('generated_text', "Erro ao processar leitura com o Hugging Face.")
         else:
-            print(f"Erro: {response.status_code}")
-            print(f"Erro detalhado: {response.text}")
-            return "Erro ao processar leitura com o Hugging Face."
+            return f"Erro ao processar leitura: {response.status_code} - {response.text}"
     except Exception as e:
         print(f"Erro de conexão: {str(e)}")
         return f"Erro ao conectar com o Hugging Face: {str(e)}"
+
 
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
