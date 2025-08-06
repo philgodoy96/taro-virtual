@@ -1,8 +1,8 @@
 # 🔮 Virtual Tarot AI
 
-A modern tarot web app powered by GROQ’s LLaMA 3 API. The user draws 3 to 10 cards, asks a personal question, and receives a thoughtful interpretation from an AI acting as an intuitive, empathetic tarot reader.
+A modern tarot web app powered by **GROQ’s LLaMA 3 API**. The user draws 3 to 10 cards, asks a personal question, and receives a thoughtful interpretation from an AI acting as an intuitive, empathetic tarot reader.
 
-This project combines traditional tarot symbolism with AI reasoning using LLaMA 3 via GROQ, FastAPI, and LangChain. Originally built with OpenAI, it now runs on GROQ for its excellent performance and free access.
+This project combines traditional tarot symbolism with AI reasoning using **LLaMA 3 via GROQ**, FastAPI, and LangChain. Originally built with OpenAI, it now runs on GROQ for its **excellent performance and free access**.
 
 ---
 
