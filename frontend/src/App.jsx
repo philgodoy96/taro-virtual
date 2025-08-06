@@ -52,7 +52,7 @@ export default function TarotApp() {
   const handleInterpret = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://taro-backend-2k9m.onrender.com/tarot-reading", {
+      const response = await fetch("https://taro-backend-2k9m.onrender.com/consult-tarot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
