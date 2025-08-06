@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-TAROLOGOS = {
+READERS = {
     "prompt": """
         You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
 
@@ -32,24 +32,22 @@ TAROLOGOS = {
     """
 }
 
-# Atualizando a URL para o modelo Groq
-GROQ_API_URL = "https://api.groq.ai/v1/inference/compound-beta"
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-class ConsultaRequest(BaseModel):
+class ConsultationRequest(BaseModel):
     question: str
     cards: List[str]
     positions: List[str]
 
-def make_groq_request(prompt: str) -> str:
+def make_openai_request(prompt: str) -> str:
     headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
         "Content-Type": "application/json"
     }
 
-    # O corpo da requisição deve incluir o campo 'messages' com o formato correto
     data = {
-        "model": "compound-beta",
+        "model": "gpt-3.5-turbo",
         "messages": [
             {
                 "role": "user",
@@ -59,37 +57,36 @@ def make_groq_request(prompt: str) -> str:
     }
 
     try:
-        response = requests.post(GROQ_API_URL, headers=headers, json=data)
+        response = requests.post(OPENAI_API_URL, headers=headers, json=data)
         print(f"Status Code: {response.status_code}")
-        print(f"Response Text: {response.text}")  # Para debugar o retorno completo
+        print(f"Response Text: {response.text}")
 
         if response.status_code == 200:
-            # Ajuste aqui para acessar a resposta corretamente
-            return response.json().get('choices', [{}])[0].get('message', {}).get('content', "Erro ao processar leitura com a Groq.")
+            return response.json().get('choices', [{}])[0].get('message', {}).get('content', "Error processing reading with OpenAI.")
         else:
-            return f"Erro ao processar leitura: {response.status_code} - {response.text}"
+            return f"Error processing reading: {response.status_code} - {response.text}"
     except Exception as e:
-        print(f"Erro de conexão: {str(e)}")
-        return f"Erro ao conectar com a Groq: {str(e)}"
+        print(f"Connection error: {str(e)}")
+        return f"Error connecting to OpenAI: {str(e)}"
 
-@app.post("/consultar-taro")
-def consultar_taro(data: ConsultaRequest):
+@app.post("/consult-tarot")
+def consult_tarot(data: ConsultationRequest):
     try:
-        print("📩 Recebido:")
-        print("❓ Pergunta:", data.question)
-        print("🃏 Cartas:", data.cards)
-        print("📌 Posições:", data.positions)
+        print("📩 Received:")
+        print("❓ Question:", data.question)
+        print("🃏 Cards:", data.cards)
+        print("📌 Positions:", data.positions)
 
         if not data.question.strip():
-            raise HTTPException(status_code=422, detail="A pergunta não pode estar vazia.")
+            raise HTTPException(status_code=422, detail="The question cannot be empty.")
         if not data.cards or not data.positions:
-            raise HTTPException(status_code=422, detail="Cartas e posições são obrigatórias.")
+            raise HTTPException(status_code=422, detail="Cards and positions are required.")
 
         carta_posicional = "\n".join(
             [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))] 
         )
 
-        prompt = f"""{TAROLOGOS['prompt']}
+        prompt = f"""{READERS['prompt']}
 
 The querent has asked you something important:
 
@@ -108,15 +105,15 @@ Bring empathy, clarity, and personality. You don't need to be poetic — just in
 If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
 """
 
-        resposta = make_groq_request(prompt)
-        print("🔁 Resposta da LLM:", resposta)
+        resposta = make_openai_request(prompt)
+        print("🔁 OpenAI Response:", resposta)
         return {"message": resposta.strip()}
 
     except HTTPException as http_err:
         raise http_err
     except Exception as e:
-        print("🔥 Erro interno:", e)
-        raise HTTPException(status_code=500, detail=f"Erro ao processar leitura: {str(e)}")
+        print("🔥 Internal error:", e)
+        raise HTTPException(status_code=500, detail=f"Error processing reading: {str(e)}")
 
 @app.get("/")
 def wake_up():
