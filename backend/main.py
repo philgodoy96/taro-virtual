@@ -32,7 +32,8 @@ TAROLOGOS = {
     """
 }
 
-HF_API_URL = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
+# Atualizando a URL para o modelo Mistral 7B
+HF_API_URL = "https://api-inference.huggingface.co/models/mistral-7B"
 HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 class ConsultaRequest(BaseModel):
@@ -42,7 +43,8 @@ class ConsultaRequest(BaseModel):
 
 def make_huggingface_request(prompt: str) -> str:
     headers = {
-        "Authorization": f"Bearer {HF_API_KEY}"
+        "Authorization": f"Bearer {HF_API_KEY}",
+        "Content-Type": "application/json"
     }
 
     data = {
@@ -62,11 +64,9 @@ def make_huggingface_request(prompt: str) -> str:
         print(f"Erro de conexão: {str(e)}")
         return f"Erro ao conectar com o Hugging Face: {str(e)}"
 
-
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
     try:
-       
         print("📩 Recebido:")
         print("❓ Pergunta:", data.question)
         print("🃏 Cartas:", data.cards)
