@@ -6,12 +6,10 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# Carregando variáveis de ambiente
 load_dotenv()
 
 app = FastAPI()
 
-# Configuração de CORS para permitir acesso ao frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -36,7 +34,7 @@ TAROLOGOS = {
 
 # Atualizando a URL para o modelo Mistral 7B
 HF_API_URL = "https://api-inference.huggingface.co/models/mistral-7B"
-HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")  # Obtendo a chave da variável de ambiente
+HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 class ConsultaRequest(BaseModel):
     question: str
@@ -59,24 +57,18 @@ def make_huggingface_request(prompt: str) -> str:
         print(f"Response Text: {response.text}")  # Adicionando para imprimir o texto completo da resposta
 
         if response.status_code == 200:
-            response_data = response.json()
-            print("Resposta completa:", response_data)  # Adicionando para depuração
-            if isinstance(response_data, list) and len(response_data) > 0:
-                return response_data[0].get('generated_text', "Erro ao processar leitura com o Hugging Face.")
-            else:
-                return "Resposta inesperada do Hugging Face."
+            return response.json()[0].get('generated_text', "Erro ao processar leitura com o Hugging Face.")
         else:
-            print(f"Erro: {response.status_code} - {response.text}")
+            print(f"Erro: {response.status_code}")
+            print(f"Erro detalhado: {response.text}")
             return "Erro ao processar leitura com o Hugging Face."
     except Exception as e:
         print(f"Erro de conexão: {str(e)}")
         return f"Erro ao conectar com o Hugging Face: {str(e)}"
 
-
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
     try:
-        # Log de entrada para depuração
         print("📩 Recebido:")
         print("❓ Pergunta:", data.question)
         print("🃏 Cartas:", data.cards)
@@ -110,7 +102,6 @@ Bring empathy, clarity, and personality. You don't need to be poetic — just in
 If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
 """
 
-        # Enviar para o Hugging Face e obter a resposta
         resposta = make_huggingface_request(prompt)
         print("🔁 Resposta da LLM:", resposta)
         return {"message": resposta.strip()}
