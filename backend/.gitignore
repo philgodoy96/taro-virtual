@@ -1,7 +1,3 @@
-OPENAI_API_KEY=sk-xxxx
-MERCADO_PAGO_TOKEN=TEST-xxxxxxxxxxxxxxxxxxxx
-SECRET_KEY=sua_chave_jwt
-
 .env
 
 # Python

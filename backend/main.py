@@ -2,10 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
-from langchain_community.chat_models import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from fastapi.responses import JSONResponse
+import requests
 import os
 from dotenv import load_dotenv
 
@@ -32,26 +29,39 @@ TAROLOGOS = {
         You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.
 
         Always adapt your tone to the question. Be real, be kind, be clear.
+    """
+}
 
-        """
-        }
-
-llm = ChatOpenAI(
-    model="gpt-4o",
-    temperature=0.85,
-    max_tokens=1200,
-    openai_api_key=os.getenv("OPENAI_API_KEY")
-)
+HF_API_URL = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
+HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 class ConsultaRequest(BaseModel):
     question: str
     cards: List[str]
     positions: List[str]
 
+def make_huggingface_request(prompt: str) -> str:
+    headers = {
+        "Authorization": f"Bearer {HF_API_KEY}"
+    }
+
+    data = {
+        "inputs": prompt
+    }
+
+    try:
+        response = requests.post(HF_API_URL, headers=headers, json=data)
+        if response.status_code == 200:
+            return response.json()[0]['generated_text']
+        else:
+            return "Erro ao processar leitura com o Hugging Face."
+    except Exception as e:
+        return f"Erro ao conectar com o Hugging Face: {str(e)}"
+
 @app.post("/consultar-taro")
 def consultar_taro(data: ConsultaRequest):
     try:
-        # ✅ Log básico
+       
         print("📩 Recebido:")
         print("❓ Pergunta:", data.question)
         print("🃏 Cartas:", data.cards)
@@ -66,17 +76,15 @@ def consultar_taro(data: ConsultaRequest):
             [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
         )
 
-        prompt = PromptTemplate(
-    input_variables=["question", "card_positional"],
-    template=f"""{TAROLOGOS['prompt']}
+        prompt = f"""{TAROLOGOS['prompt']}
 
 The querent has asked you something important:
 
-Question: "{{question}}"
+Question: "{data.question}"
 
 These are the cards drawn and their positions:
 
-{{card_positional}}
+{carta_posicional}
 
 🎯 Your task:
 
@@ -86,14 +94,8 @@ Bring empathy, clarity, and personality. You don't need to be poetic — just in
 
 If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
 """
-)
 
-        chain = LLMChain(llm=llm, prompt=prompt)
-        resposta = chain.run(
-            question=data.question,
-            card_positional=carta_posicional
-        )
-
+        resposta = make_huggingface_request(prompt)
         print("🔁 Resposta da LLM:", resposta)
         return {"message": resposta.strip()}
 
