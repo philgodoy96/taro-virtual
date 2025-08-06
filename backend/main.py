@@ -25,15 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Persona definition for the tarot reader's tone and behavior
-READER_PERSONA = """
-You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
-
-You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.
-
-Always adapt your tone to the question. Be real, be kind, be clear.
-"""
-
 # Groq API configuration
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -83,7 +74,12 @@ def consult_tarot(data: ConsultationRequest):
         [f"{i + 1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
     )
 
-    full_prompt = f"""{READER_PERSONA}
+    full_prompt = f"""
+You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
+
+You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.
+
+Always adapt your tone to the question. Be real, be kind, be clear.
 
 The querent has asked you something important:
 
@@ -99,7 +95,7 @@ Speak to the seeker like a close, grounded friend who knows the cards well. Let 
 
 Bring empathy, clarity, and personality. You don't need to be poetic — just intuitive, thoughtful, and real.
 
-If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
+If the question is sensitive, show care. If it's light, feel free to smile through your words. But always answer the question with honesty and heart.
 """
 
     interpretation = make_groq_request(full_prompt)
