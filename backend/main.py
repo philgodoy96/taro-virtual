@@ -51,11 +51,12 @@ def make_huggingface_request(prompt: str) -> str:
 
     try:
         response = requests.post(HF_API_URL, headers=headers, json=data)
+        print(f"Status Code: {response.status_code}")
+        print(f"Response Text: {response.text}")  # Adicionando para imprimir o texto completo da resposta
+
         if response.status_code == 200:
-            print(response.json())  # Verifique o conteúdo da resposta
             return response.json()[0].get('generated_text', "Erro ao processar leitura com o Hugging Face.")
         else:
-            print(f"Erro: {response.status_code} - {response.text}")
             return "Erro ao processar leitura com o Hugging Face."
     except Exception as e:
         print(f"Erro de conexão: {str(e)}")
