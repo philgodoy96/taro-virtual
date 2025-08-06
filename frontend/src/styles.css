@@ -1,3 +1,4 @@
+/* ========== RESET & BASE STYLES ========== */
 html, body {
   overflow-x: hidden;
 }
@@ -8,6 +9,7 @@ html, body {
   padding: 0;
 }
 
+/* ========== GLOBAL BODY ========== */
 body {
   font-family: 'Georgia', serif;
   background: radial-gradient(ellipse at top, #1a103d 0%, #000000 100%);
@@ -17,6 +19,7 @@ body {
   font-size: 1.1rem;
 }
 
+/* ========== MAIN CONTAINER ========== */
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -28,6 +31,7 @@ body {
   box-shadow: 0 0 30px rgba(140, 100, 255, 0.2);
 }
 
+/* ========== HEADINGS ========== */
 h1, h2, h3 {
   font-family: 'Cinzel Decorative', cursive;
   color: #e3d0ff;
@@ -40,11 +44,12 @@ h2 { font-size: 1.8rem; }
 h3 { font-size: 1.4rem; }
 
 .container p {
-  margin-top:0.2rem;
+  margin-top: 0.2rem;
   margin-bottom: 1.25rem;
   font-size: 1.1rem;
 }
 
+/* ========== WELCOME SECTION ========== */
 .welcome {
   text-align: center;
   animation: fadeIn 1s ease-in-out;
@@ -58,19 +63,12 @@ h3 { font-size: 1.4rem; }
 }
 
 @media (min-width: 800px) {
-  p.subtitle {
-    font-size: 1.3rem;
-  }
-
-  label.subtitle{
-    font-size:1.18rem;
-  }
-
-  .welcome textarea{
-    font-size:1.1rem;
-  }
+  p.subtitle { font-size: 1.3rem; }
+  label.subtitle { font-size: 1.18rem; }
+  .welcome textarea { font-size: 1.1rem; }
 }
 
+/* ========== FORM ELEMENTS ========== */
 .welcome textarea {
   width: 100%;
   padding: 1.2rem;
@@ -84,8 +82,13 @@ h3 { font-size: 1.4rem; }
   box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
   font-family: 'Georgia', serif;
   outline: none;
-  resize:none;
+  resize: none;
   min-height: 150px;
+}
+
+textarea::placeholder {
+  color: #cbbfe7;
+  opacity: 0.8;
 }
 
 .welcome select {
@@ -103,7 +106,7 @@ h3 { font-size: 1.4rem; }
   -webkit-appearance: none;
   -moz-appearance: none;
   outline: none;
-  margin-top:1rem;
+  margin-top: 1rem;
   background-image: none !important;
   background-position: initial !important;
   background-size: initial !important;
@@ -111,11 +114,7 @@ h3 { font-size: 1.4rem; }
   padding-right: 1rem;
 }
 
-textarea::placeholder {
-  color: #cbbfe7;
-  opacity: 0.8;
-}
-
+/* ========== BUTTONS ========== */
 button {
   padding: 0.75rem 1.5rem;
   font-size: 1.05rem;
@@ -147,12 +146,19 @@ button.loading {
   animation: glowPulse 1.8s infinite ease-in-out;
 }
 
+/* ========== ANIMATIONS ========== */
 @keyframes glowPulse {
-  0%   { box-shadow: 0 0 12px #dcbfff; }
-  50%  { box-shadow: 0 0 24px #e8ccff; }
+  0% { box-shadow: 0 0 12px #dcbfff; }
+  50% { box-shadow: 0 0 24px #e8ccff; }
   100% { box-shadow: 0 0 12px #dcbfff; }
 }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== CARD DRAWING SECTION ========== */
 .deck {
   margin: 2rem auto;
   cursor: pointer;
@@ -184,6 +190,7 @@ button.loading {
   box-shadow: 0 0 25px rgba(198, 145, 255, 0.7);
 }
 
+/* ========== CARD DISPLAY LIST ========== */
 .card-list {
   display: flex;
   flex-wrap: wrap;
@@ -235,6 +242,7 @@ button.loading {
   justify-content: center;
 }
 
+/* ========== INTERPRETATION SECTION ========== */
 .interpretation {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -266,15 +274,11 @@ button.loading {
   margin-bottom: 1rem;
 }
 
-.interpretation button{
-  margin-top:1.8rem;
+.interpretation button {
+  margin-top: 1.8rem;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
+/* ========== RESPONSIVE STYLES ========== */
 @media (max-width: 768px) {
   body {
     padding: 1rem;
