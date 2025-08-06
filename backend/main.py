@@ -10,6 +10,7 @@ load_dotenv()
 
 app = FastAPI()
 
+# CORS: permite acesso do frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -22,32 +23,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Prompt base para o "leitor de tarô"
 READERS = {
     "prompt": """
-        You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
+You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
 
-        You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.
+You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.
 
-        Always adapt your tone to the question. Be real, be kind, be clear.
-    """
+Always adapt your tone to the question. Be real, be kind, be clear.
+"""
 }
 
-OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Endpoint da Groq
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
+# Modelo da requisição
 class ConsultationRequest(BaseModel):
     question: str
     cards: List[str]
     positions: List[str]
 
-def make_openai_request(prompt: str) -> str:
+# Função para enviar o prompt à Groq
+def make_groq_request(prompt: str) -> str:
     headers = {
-        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
 
     data = {
-        "model": "gpt-3.5-turbo",
+        "model": "llama3-70b-8192",
         "messages": [
             {
                 "role": "user",
@@ -57,30 +62,31 @@ def make_openai_request(prompt: str) -> str:
     }
 
     try:
-        response = requests.post(OPENAI_API_URL, headers=headers, json=data)
+        response = requests.post(GROQ_API_URL, headers=headers, json=data)
         print(f"Status Code: {response.status_code}")
         print(f"Response Text: {response.text}")
 
         if response.status_code == 200:
-            return response.json().get('choices', [{}])[0].get('message', {}).get('content', "Error processing reading with OpenAI.")
+            return response.json().get('choices', [{}])[0].get('message', {}).get('content', "Erro ao gerar leitura com a Groq.")
         else:
-            return f"Error processing reading: {response.status_code} - {response.text}"
+            return f"Erro ao gerar leitura: {response.status_code} - {response.text}"
     except Exception as e:
-        print(f"Connection error: {str(e)}")
-        return f"Error connecting to OpenAI: {str(e)}"
+        print(f"Erro de conexão: {str(e)}")
+        return f"Erro ao conectar com a Groq: {str(e)}"
 
+# Endpoint principal da aplicação
 @app.post("/consult-tarot")
 def consult_tarot(data: ConsultationRequest):
     try:
-        print("📩 Received:")
-        print("❓ Question:", data.question)
-        print("🃏 Cards:", data.cards)
-        print("📌 Positions:", data.positions)
+        print("📩 Recebido:")
+        print("❓ Pergunta:", data.question)
+        print("🃏 Cartas:", data.cards)
+        print("📌 Posições:", data.positions)
 
         if not data.question.strip():
-            raise HTTPException(status_code=422, detail="The question cannot be empty.")
+            raise HTTPException(status_code=422, detail="A pergunta não pode estar vazia.")
         if not data.cards or not data.positions:
-            raise HTTPException(status_code=422, detail="Cards and positions are required.")
+            raise HTTPException(status_code=422, detail="Cartas e posições são obrigatórias.")
 
         carta_posicional = "\n".join(
             [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))] 
@@ -105,16 +111,17 @@ Bring empathy, clarity, and personality. You don't need to be poetic — just in
 If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
 """
 
-        resposta = make_openai_request(prompt)
-        print("🔁 OpenAI Response:", resposta)
+        resposta = make_groq_request(prompt)
+        print("🔁 Resposta da Groq:", resposta)
         return {"message": resposta.strip()}
 
     except HTTPException as http_err:
         raise http_err
     except Exception as e:
-        print("🔥 Internal error:", e)
-        raise HTTPException(status_code=500, detail=f"Error processing reading: {str(e)}")
+        print("🔥 Erro interno:", e)
+        raise HTTPException(status_code=500, detail=f"Erro ao processar leitura: {str(e)}")
 
+# Endpoint para "acordar" o backend
 @app.get("/")
 def wake_up():
     return {"status": "Backend is awake ✨"}
