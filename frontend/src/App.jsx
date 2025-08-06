@@ -1,4 +1,3 @@
-// 📁 src/App.jsx
 import React, { useState, useEffect, useRef } from "react";
 import WelcomeScreen from "./components/WelcomeScreen";
 import CardDrawer from "./components/CardDrawer";
@@ -53,14 +52,14 @@ export default function TarotApp() {
   const handleInterpret = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://taro-backend-2k9m.onrender.com/consultar-taro", {
+      const response = await fetch("https://taro-backend-2k9m.onrender.com/tarot-reading", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question,
           cards: drawnCards,
           positions: spread.positions.slice(0, drawnCards.length),
-          tarologo: ""
+          reader: ""
         })
       });
 
