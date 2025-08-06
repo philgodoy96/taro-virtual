@@ -26,15 +26,13 @@ app.add_middleware(
 )
 
 # Persona definition for the tarot reader's tone and behavior
-READERS = {
-    "prompt": """
+READER_PERSONA = """
 You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
 
 You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.
 
 Always adapt your tone to the question. Be real, be kind, be clear.
 """
-}
 
 # Groq API configuration
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
@@ -46,8 +44,11 @@ class ConsultationRequest(BaseModel):
     cards: List[str]
     positions: List[str]
 
-# Sends the formatted prompt to Groq's LLaMA3 model and returns the response
+# Function to send prompt to Groq
 def make_groq_request(prompt: str) -> str:
+    if not GROQ_API_KEY:
+        raise HTTPException(status_code=500, detail="Missing GROQ_API_KEY.")
+
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
@@ -63,41 +64,26 @@ def make_groq_request(prompt: str) -> str:
         ]
     }
 
-    try:
-        response = requests.post(GROQ_API_URL, headers=headers, json=data)
-        print(f"Status Code: {response.status_code}")
-        print(f"Response Text: {response.text}")
+    response = requests.post(GROQ_API_URL, headers=headers, json=data)
+    if response.status_code == 200:
+        return response.json().get("choices", [{}])[0].get("message", {}).get("content", "")
+    else:
+        print(f"[Groq Error] Status {response.status_code}: {response.text}")
+        raise HTTPException(status_code=response.status_code, detail="Error from Groq API.")
 
-        if response.status_code == 200:
-            return response.json().get('choices', [{}])[0].get('message', {}).get('content', "Error generating reading from Groq.")
-        else:
-            return f"Error generating reading: {response.status_code} - {response.text}"
-    except Exception as e:
-        print(f"Connection error: {str(e)}")
-        return f"Error connecting to Groq: {str(e)}"
-
-# Main endpoint for tarot consultation
+# Endpoint for tarot consultation
 @app.post("/consult-tarot")
 def consult_tarot(data: ConsultationRequest):
-    try:
-        print("📩 Received request:")
-        print("❓ Question:", data.question)
-        print("🃏 Cards:", data.cards)
-        print("📌 Positions:", data.positions)
+    if not data.question.strip():
+        raise HTTPException(status_code=422, detail="The question cannot be empty.")
+    if not data.cards or not data.positions:
+        raise HTTPException(status_code=422, detail="Cards and positions are required.")
 
-        # Validate required inputs
-        if not data.question.strip():
-            raise HTTPException(status_code=422, detail="The question cannot be empty.")
-        if not data.cards or not data.positions:
-            raise HTTPException(status_code=422, detail="Cards and positions are required.")
+    card_details = "\n".join(
+        [f"{i + 1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
+    )
 
-        # Format card-position pairs as readable text
-        card_position_text = "\n".join(
-            [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))] 
-        )
-
-        # Combine persona + user input into final prompt
-        prompt = f"""{READERS['prompt']}
+    full_prompt = f"""{READER_PERSONA}
 
 The querent has asked you something important:
 
@@ -105,7 +91,7 @@ Question: "{data.question}"
 
 These are the cards drawn and their positions:
 
-{card_position_text}
+{card_details}
 
 🎯 Your task:
 
@@ -116,18 +102,10 @@ Bring empathy, clarity, and personality. You don't need to be poetic — just in
 If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
 """
 
-        # Get response from Groq
-        response_text = make_groq_request(prompt)
-        print("🔁 Groq Response:", response_text)
-        return {"message": response_text.strip()}
-
-    except HTTPException as http_err:
-        raise http_err
-    except Exception as e:
-        print("🔥 Internal server error:", e)
-        raise HTTPException(status_code=500, detail=f"Error processing reading: {str(e)}")
+    interpretation = make_groq_request(full_prompt)
+    return {"message": interpretation.strip()}
 
 # Health check endpoint
 @app.get("/")
-def wake_up():
+def health_check():
     return {"status": "Backend is awake ✨"}
