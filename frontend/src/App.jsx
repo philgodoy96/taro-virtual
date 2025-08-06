@@ -6,7 +6,6 @@ import Interpretation from "./components/Interpretation";
 import { shuffleDeck, defaultSpreads } from "./utils/tarotDeck";
 
 export default function TarotApp() {
-  // Core states to manage question, reading stage, card deck and result
   const [question, setQuestion] = useState("");
   const [numCards, setNumCards] = useState(3);
   const [stage, setStage] = useState("welcome");
@@ -18,17 +17,25 @@ export default function TarotApp() {
   const interpretRef = useRef(null);
   const interpretationRef = useRef(null);
 
-  // Define positions for the current spread (defaults to 3-card spread)
   const spread = {
     positions: defaultSpreads[numCards] || Array(numCards).fill("Card")
   };
 
-  // Ping the backend once when app loads (keeps it awake on Render)
+  // Keep backend awake on Render
   useEffect(() => {
     fetch("https://taro-backend-2k9m.onrender.com/").catch(console.error);
   }, []);
 
-  // Starts a new reading by shuffling the deck and moving to draw stage
+  // Preload card images once the deck is generated
+  useEffect(() => {
+    if (deck.length > 0) {
+      deck.forEach(card => {
+        const img = new Image();
+        img.src = `/images/cards/${card.replaceAll(" ", "_")}.jpg`;
+      });
+    }
+  }, [deck]);
+
   const startReading = () => {
     setDeck(shuffleDeck());
     setDrawnCards([]);
@@ -36,7 +43,6 @@ export default function TarotApp() {
     setStage("draw");
   };
 
-  // Draws one card from the deck
   const drawCard = () => {
     const nextCard = deck.find(card => !drawnCards.includes(card));
     if (!nextCard) return;
@@ -44,7 +50,6 @@ export default function TarotApp() {
     setDrawnCards(prev => {
       const updated = [...prev, nextCard];
 
-      // Auto-scroll to interpretation button when all cards are drawn
       if (updated.length === numCards) {
         setTimeout(() => {
           interpretRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -55,7 +60,6 @@ export default function TarotApp() {
     });
   };
 
-  // Sends the question and selected cards to the backend for interpretation
   const handleInterpret = async () => {
     setLoading(true);
     try {
@@ -66,7 +70,7 @@ export default function TarotApp() {
           question,
           cards: drawnCards,
           positions: spread.positions.slice(0, drawnCards.length),
-          reader: "" // reserved for future use (e.g. multiple reader styles)
+          reader: ""
         })
       });
 
@@ -74,7 +78,6 @@ export default function TarotApp() {
       setInterpretation(data.message);
       setStage("result");
 
-      // Scroll to the generated interpretation
       setTimeout(() => {
         interpretationRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 300);
@@ -87,7 +90,6 @@ export default function TarotApp() {
     }
   };
 
-  // Resets the app to the initial state
   const reset = () => {
     setStage("welcome");
     setQuestion("");
