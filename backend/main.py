@@ -6,10 +6,13 @@ import requests
 import os
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
+# Initialize FastAPI app
 app = FastAPI()
 
+# Enable CORS for frontend integration (Vercel + local dev)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -22,6 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Persona definition for the tarot reader's tone and behavior
 READERS = {
     "prompt": """
 You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
@@ -32,14 +36,17 @@ Always adapt your tone to the question. Be real, be kind, be clear.
 """
 }
 
+# Groq API configuration
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
+# Request model for tarot consultation
 class ConsultationRequest(BaseModel):
     question: str
     cards: List[str]
     positions: List[str]
 
+# Sends the formatted prompt to Groq's LLaMA3 model and returns the response
 def make_groq_request(prompt: str) -> str:
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -69,6 +76,7 @@ def make_groq_request(prompt: str) -> str:
         print(f"Connection error: {str(e)}")
         return f"Error connecting to Groq: {str(e)}"
 
+# Main endpoint for tarot consultation
 @app.post("/consult-tarot")
 def consult_tarot(data: ConsultationRequest):
     try:
@@ -77,15 +85,18 @@ def consult_tarot(data: ConsultationRequest):
         print("🃏 Cards:", data.cards)
         print("📌 Positions:", data.positions)
 
+        # Validate required inputs
         if not data.question.strip():
             raise HTTPException(status_code=422, detail="The question cannot be empty.")
         if not data.cards or not data.positions:
             raise HTTPException(status_code=422, detail="Cards and positions are required.")
 
+        # Format card-position pairs as readable text
         card_position_text = "\n".join(
             [f"{i+1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))] 
         )
 
+        # Combine persona + user input into final prompt
         prompt = f"""{READERS['prompt']}
 
 The querent has asked you something important:
@@ -105,6 +116,7 @@ Bring empathy, clarity, and personality. You don't need to be poetic — just in
 If the question is sensitive, show care. If it's light, feel free to smile through your words. But **always answer the question** with honesty and heart.
 """
 
+        # Get response from Groq
         response_text = make_groq_request(prompt)
         print("🔁 Groq Response:", response_text)
         return {"message": response_text.strip()}
@@ -115,6 +127,7 @@ If the question is sensitive, show care. If it's light, feel free to smile throu
         print("🔥 Internal server error:", e)
         raise HTTPException(status_code=500, detail=f"Error processing reading: {str(e)}")
 
+# Health check endpoint
 @app.get("/")
 def wake_up():
     return {"status": "Backend is awake ✨"}
