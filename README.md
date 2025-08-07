@@ -2,7 +2,7 @@
 
 A modern tarot web app powered by **GROQ’s LLaMA 3 API**. The user draws 3 to 10 cards, asks a personal question, and receives a thoughtful interpretation from an AI acting as an intuitive, empathetic tarot reader.
 
-This project combines traditional tarot symbolism with AI reasoning using **LLaMA 3 via GROQ**, FastAPI, and LangChain. Originally built with OpenAI, it now uses GROQ for its **excellent performance and free access**.
+This project combines traditional tarot symbolism with AI reasoning using **LLaMA 3 via GROQ** and FastAPI. Originally built with OpenAI, it now uses GROQ for its **excellent performance and free access**.
 
 ---
 
@@ -22,8 +22,8 @@ This project combines traditional tarot symbolism with AI reasoning using **LLaM
 | Frontend            | Backend                  | AI / LLM Stack       | Deployment          |
 |---------------------|---------------------------|----------------------|---------------------|
 | React (Vite)        | FastAPI (Python)          | GROQ (LLaMA 3)      | Vercel (frontend)   |
-| CSS Modules         | Pydantic, CORS            | LangChain            | Render (backend)    |
-| useState/useEffect  | LLMChain + PromptTemplate | Custom prompt design | .env + CORS config  |
+| CSS Modules         | Pydantic, CORS            | Custom prompt design | Render (backend)    |
+| useState/useEffect  | LLMChain + PromptTemplate | Manual Groq integration | .env + CORS config  |
 
 ---
 
