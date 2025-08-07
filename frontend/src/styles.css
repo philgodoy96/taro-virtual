@@ -21,14 +21,9 @@ body {
 
 /* ========== MAIN CONTAINER ========== */
 .container {
-  max-width: 900px;
+  padding: 0 1rem;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 30px rgba(140, 100, 255, 0.2);
 }
 
 /* ========== HEADINGS ========== */
@@ -105,9 +100,10 @@ h3 { font-size: 1.4rem; }
 
 /* ========== WELCOME SECTION ========== */
 .welcome {
-  text-align: center;
-  animation: fadeIn 1s ease-in-out;
-  padding-top: 4rem; /* Ensure spacing under language menu */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
 }
 
 .subtitle {
