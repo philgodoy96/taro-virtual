@@ -1,7 +1,16 @@
 import { useRef, useEffect } from "react";
 import translations from "../utils/Translations";
+import LanguageSelector from "./LanguageSelector";
 
-export default function WelcomeScreen({ question, setQuestion, numCards, setNumCards, startReading, language }) {
+export default function WelcomeScreen({
+  question,
+  setQuestion,
+  numCards,
+  setNumCards,
+  startReading,
+  language,
+  setLanguage
+}) {
   const textareaRef = useRef(null);
   const t = translations[language] || translations.en;
 
@@ -14,6 +23,10 @@ export default function WelcomeScreen({ question, setQuestion, numCards, setNumC
 
   return (
     <div className="welcome">
+      <div className="language-selector">
+        <LanguageSelector language={language} setLanguage={setLanguage} />
+      </div>
+
       <h1>{t.welcome}</h1>
       <p className="subtitle"><em>{t.subtitle}</em></p>
 

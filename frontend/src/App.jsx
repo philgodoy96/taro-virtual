@@ -122,8 +122,12 @@ export default function TarotApp() {
 
   return (
     <div className="container">
-      {/* Language selector at the top of the app */}
-      <LanguageSelector selectedLang={language} onChange={setLanguage} />
+      {/* Show language selector only on welcome screen */}
+      {stage === "welcome" && (
+        <div className="language-selector">
+          <LanguageSelector selectedLang={language} onChange={setLanguage} />
+        </div>
+      )}
 
       {/* Welcome screen: question input + number of cards */}
       {stage === "welcome" && (

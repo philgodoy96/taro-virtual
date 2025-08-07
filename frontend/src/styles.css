@@ -49,31 +49,12 @@ h3 { font-size: 1.4rem; }
   font-size: 1.1rem;
 }
 
-/* ========== WELCOME SECTION ========== */
-.welcome {
-  text-align: center;
-  animation: fadeIn 1s ease-in-out;
-}
-
-.subtitle {
-  font-family: 'Georgia', serif;
-  color: #e3d0ff;
-  text-align: center;
-  opacity: 0.95;
-}
-
-@media (min-width: 800px) {
-  p.subtitle { font-size: 1.3rem; }
-  label.subtitle { font-size: 1.18rem; }
-  .welcome textarea { font-size: 1.1rem; }
-}
-
 /* ========== LANGUAGE SELECTOR ========== */
 .language-selector {
   position: fixed;
   top: 1rem;
   right: 1rem;
-  z-index: 999;
+  z-index: 1000;
 }
 
 .lang-btn {
@@ -100,6 +81,9 @@ h3 { font-size: 1.4rem; }
   border-radius: 10px;
   backdrop-filter: blur(6px);
   box-shadow: 0 0 12px rgba(140, 100, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
 }
 
 .lang-dropdown li {
@@ -109,10 +93,33 @@ h3 { font-size: 1.4rem; }
   font-family: 'Georgia', serif;
   cursor: pointer;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .lang-dropdown li:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ========== WELCOME SECTION ========== */
+.welcome {
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+  padding-top: 4rem; /* Ensure spacing under language menu */
+}
+
+.subtitle {
+  font-family: 'Georgia', serif;
+  color: #e3d0ff;
+  text-align: center;
+  opacity: 0.95;
+}
+
+@media (min-width: 800px) {
+  p.subtitle { font-size: 1.3rem; }
+  label.subtitle { font-size: 1.18rem; }
+  .welcome textarea { font-size: 1.1rem; }
 }
 
 /* ========== FORM ELEMENTS ========== */
@@ -150,14 +157,9 @@ textarea::placeholder {
   margin-bottom: 1rem;
   box-shadow: inset 0 0 10px rgba(140, 100, 255, 0.3);
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   outline: none;
   margin-top: 1rem;
   background-image: none !important;
-  background-position: initial !important;
-  background-size: initial !important;
-  background-repeat: no-repeat;
   padding-right: 1rem;
 }
 
@@ -219,7 +221,6 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .deck p {
@@ -347,6 +348,10 @@ textarea:focus {
   h1 { font-size: 1.9rem; }
   h2 { font-size: 1.6rem; }
   h3 { font-size: 1.3rem; }
+
+  .welcome {
+    padding-top: 5rem;
+  }
 
   textarea {
     font-size: 0.9rem;
