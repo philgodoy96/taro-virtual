@@ -19,11 +19,11 @@ This project combines traditional tarot symbolism with AI reasoning using **LLaM
 
 ## 🛠️ Tech Stack
 
-| Frontend            | Backend                  | AI / LLM Stack       | Deployment          |
-|---------------------|---------------------------|----------------------|---------------------|
-| React (Vite)        | FastAPI (Python)          | GROQ (LLaMA 3)      | Vercel (frontend)   |
-| CSS Modules         | Pydantic, CORS            | Custom prompt design | Render (backend)    |
-| useState/useEffect  | LLMChain + PromptTemplate | Manual Groq integration | .env + CORS config  |
+| Frontend            | Backend                  | AI / LLM Stack            | Deployment          |
+|---------------------|---------------------------|---------------------------|---------------------|
+| React (Vite)        | FastAPI (Python)          | GROQ (LLaMA 3 API)        | Vercel (frontend)   |
+| CSS Modules         | Pydantic, CORS            | Manual prompt crafting    | Render (backend)    |
+| useState/useEffect  | RESTful JSON endpoints    | requests + structured prompts | .env + CORS config  |
 
 ---
 
@@ -42,7 +42,7 @@ This project combines traditional tarot symbolism with AI reasoning using **LLaM
 1. User types a question and selects the number of cards
 2. Cards are drawn randomly from the full tarot deck
 3. Each card is mapped to a position (e.g. Present, Challenge, Outcome)
-4. A custom prompt is sent to GROQ’s LLaMA 3 via LangChain
+4. A custom prompt is sent to GROQ’s LLaMA 3 via HTTP request
 5. The AI returns a natural, human-like interpretation
 
 **Prompt tone:** grounded, empathetic, conversational — avoids mystical clichés
