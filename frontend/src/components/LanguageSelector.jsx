@@ -43,7 +43,7 @@ export default function LanguageSelector({ selectedLang, onChange }) {
         aria-expanded={open}
         aria-label="Change language"
       >
-        🌐 {currentLang.flag}
+        Language {currentLang.flag}
       </button>
 
       {open && (
