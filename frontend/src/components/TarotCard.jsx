@@ -1,12 +1,15 @@
+import React from "react";
+
 export default function TarotCard({ card, position }) {
   return (
-    <div className="tarot-card">
-      <h4>{position}</h4>
+    <div className="card-box">
+      <div className="card-title">{position}</div>
       <img
-        src={`/images/cards/${card.replaceAll(" ", "_")}.jpg`}
+        className="card-image"
+        src={`/cartas/${encodeURIComponent(card)}.jpg`}
         alt={card}
       />
-      <p>{card}</p>
+      <div className="card-name">{card}</div>
     </div>
   );
 }
