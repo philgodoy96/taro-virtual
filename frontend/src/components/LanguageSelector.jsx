@@ -1,3 +1,5 @@
+import React, { useState, useEffect, useRef } from "react";
+
 const languages = [
   { code: "en", label: "English", flag: "🇬🇧" },
   { code: "es", label: "Español", flag: "🇪🇸" },
