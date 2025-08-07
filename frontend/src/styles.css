@@ -70,9 +70,9 @@ h3 { font-size: 1.4rem; }
 
 /* ========== LANGUAGE SELECTOR ========== */
 .language-selector {
-  position: absolute;
-  top: 25px;
-  right: 30px;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
   z-index: 999;
 }
 
