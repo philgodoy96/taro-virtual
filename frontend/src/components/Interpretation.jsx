@@ -1,11 +1,13 @@
-import React from "react";
+import translations from "../utils/Translations";
 
-export default function Interpretation({ interpretation, reset, interpretationRef }) {
+export default function Interpretation({ interpretation, reset, interpretationRef, language }) {
+  const t = translations[language] || translations.en;
+
   return (
     <div className="interpretation" ref={interpretationRef}>
-      <h3>🔍 Interpretation:</h3>
+      <h3>{t.interpretationTitle}</h3>
       <p>{interpretation}</p>
-      <button onClick={reset}>🔁 Return to Reading</button>
+      <button onClick={reset}>{t.return}</button>
     </div>
   );
 }

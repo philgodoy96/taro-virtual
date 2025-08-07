@@ -68,6 +68,53 @@ h3 { font-size: 1.4rem; }
   .welcome textarea { font-size: 1.1rem; }
 }
 
+/* ========== LANGUAGE SELECTOR ========== */
+.language-selector {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  z-index: 999;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #fff;
+  transition: transform 0.2s ease;
+}
+
+.lang-btn:hover {
+  transform: scale(1.1);
+}
+
+.lang-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  background-color: rgba(45, 29, 74, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  list-style: none;
+  padding: 4px 0;
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 12px rgba(140, 100, 255, 0.2);
+}
+
+.lang-dropdown li {
+  padding: 10px 16px;
+  font-size: 1rem;
+  color: #f0e9ff;
+  font-family: 'Georgia', serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.lang-dropdown li:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
 /* ========== FORM ELEMENTS ========== */
 .welcome textarea {
   width: 100%;
@@ -144,6 +191,13 @@ button.loading {
   background-color: #9f6aff;
   box-shadow: 0 0 15px #dcbfff;
   animation: glowPulse 1.8s infinite ease-in-out;
+}
+
+button:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #b093ff;
+  outline-offset: 2px;
 }
 
 /* ========== ANIMATIONS ========== */
@@ -308,5 +362,12 @@ button.loading {
 
   button {
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .card-box {
+    width: 110px;
+    height: 220px;
   }
 }

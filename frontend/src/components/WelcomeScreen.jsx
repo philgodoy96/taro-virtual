@@ -1,7 +1,9 @@
 import { useRef, useEffect } from "react";
+import translations from "../utils/Translations";
 
-export default function WelcomeScreen({ question, setQuestion, numCards, setNumCards, startReading }) {
+export default function WelcomeScreen({ question, setQuestion, numCards, setNumCards, startReading, language }) {
   const textareaRef = useRef(null);
+  const t = translations[language] || translations.en;
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -12,8 +14,8 @@ export default function WelcomeScreen({ question, setQuestion, numCards, setNumC
 
   return (
     <div className="welcome">
-      <h1>🔮 Welcome to Your Tarot Reading</h1>
-      <p className="subtitle"><em>What’s been on your heart lately?</em></p>
+      <h1>{t.welcome}</h1>
+      <p className="subtitle"><em>{t.subtitle}</em></p>
 
       <textarea
         ref={textareaRef}
@@ -22,13 +24,17 @@ export default function WelcomeScreen({ question, setQuestion, numCards, setNumC
         rows={3}
       />
 
-      <label className="subtitle">How many cards do you want to draw?</label>
+      <label className="subtitle">{t.howMany}</label>
       <select value={numCards} onChange={e => setNumCards(parseInt(e.target.value))}>
-        {[3, 5, 7, 10].map(n => <option key={n} value={n}>{n} cards</option>)}
+        {[3, 5, 7, 10].map(n => (
+          <option key={n} value={n}>
+            {n} {n === 1 ? "card" : "cards"}
+          </option>
+        ))}
       </select>
 
       <button onClick={startReading} disabled={!question.trim()}>
-        Start Reading
+        {t.start}
       </button>
     </div>
   );
