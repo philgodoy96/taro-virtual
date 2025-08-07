@@ -19,10 +19,13 @@ export default function LanguageSelector({ selectedLang, onChange }) {
   const currentLang = languages.find((lang) => lang.code === selectedLang) || languages[0];
 
   const handleSelect = (code) => {
-    setOpen(false);
-    onChange(code);
+    if (code !== selectedLang) {
+      onChange(code);         // change the language in parent
+    }
+    setOpen(false);           // close the dropdown
   };
 
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -38,12 +41,12 @@ export default function LanguageSelector({ selectedLang, onChange }) {
     <div className="language-selector" ref={menuRef}>
       <button
         className="language-button"
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen((prev) => !prev)}
         aria-haspopup="true"
         aria-expanded={open}
         aria-label="Change language"
       >
-        Language {currentLang.flag}
+        🌐 {currentLang.flag}
       </button>
 
       {open && (

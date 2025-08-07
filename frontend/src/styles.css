@@ -60,14 +60,15 @@ h3 { font-size: 1.4rem; }
 .language-button {
   background: none;
   border: none;
-  font-size: 1.6rem;
+  font-weight: normal;
+  font-size: 1rem;
   cursor: pointer;
   color: #fff;
   transition: transform 0.2s ease;
 }
 
 .language-button:hover {
-  transform: scale(1.1);
+  transform: scale(1);
 }
 
 .language-menu {
