@@ -57,7 +57,7 @@ h3 { font-size: 1.4rem; }
   z-index: 1000;
 }
 
-.lang-btn {
+.language-button {
   background: none;
   border: none;
   font-size: 1.6rem;
@@ -66,11 +66,11 @@ h3 { font-size: 1.4rem; }
   transition: transform 0.2s ease;
 }
 
-.lang-btn:hover {
+.language-button:hover {
   transform: scale(1.1);
 }
 
-.lang-dropdown {
+.language-menu {
   position: absolute;
   right: 0;
   margin-top: 8px;
@@ -86,7 +86,7 @@ h3 { font-size: 1.4rem; }
   min-width: 120px;
 }
 
-.lang-dropdown li {
+.language-item {
   padding: 10px 16px;
   font-size: 1rem;
   color: #f0e9ff;
@@ -98,7 +98,7 @@ h3 { font-size: 1.4rem; }
   gap: 8px;
 }
 
-.lang-dropdown li:hover {
+.language-item:hover {
   background-color: rgba(255, 255, 255, 0.08);
 }
 
