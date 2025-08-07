@@ -51,7 +51,7 @@ This project combines traditional tarot symbolism with AI reasoning using **LLaM
 
 ## ▶️ Live Demo
 
-🖥️ [https://virtual-tarot.vercel.app](https://virtualtarot.vercel.app)  
+🖥️ [https://virtualtarot.vercel.app](https://virtualtarot.vercel.app)  
 🧠 Backend: [https://taro-backend-2k9m.onrender.com](https://taro-backend-2k9m.onrender.com)
 
 ---
