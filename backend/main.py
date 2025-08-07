@@ -34,7 +34,6 @@ class ConsultationRequest(BaseModel):
     question: str
     cards: List[str]
     positions: List[str]
-    lang: str = "en"  # Default to English
 
 # Function to send prompt to Groq
 def make_groq_request(prompt: str) -> str:
@@ -71,18 +70,11 @@ def consult_tarot(data: ConsultationRequest):
     if not data.cards or not data.positions:
         raise HTTPException(status_code=422, detail="Cards and positions are required.")
 
-    if len(data.cards) != len(data.positions):
-        raise HTTPException(status_code=422, detail="Number of cards and positions must match.")
-
     card_details = "\n".join(
         [f"{i + 1}. {pos} — {card}" for i, (pos, card) in enumerate(zip(data.positions, data.cards))]
     )
 
-    language_instruction = f'Please respond in this language: "{data.lang}".'
-
     full_prompt = f"""
-{language_instruction}
-
 You're a grounded, intuitive tarot reader who speaks like a trusted friend. Your readings are conversational, honest, and insightful — like someone who knows the cards deeply but doesn't hide behind them.
 
 You meet the querent where they are: if the question is heavy, you bring empathy; if it's light, you bring warmth and humor. Avoid sounding like a mystical oracle. Speak like someone who's human first, reader second.

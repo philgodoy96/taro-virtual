@@ -3,12 +3,9 @@ import WelcomeScreen from "./components/WelcomeScreen";
 import CardDrawer from "./components/CardDrawer";
 import CardList from "./components/CardList";
 import Interpretation from "./components/Interpretation";
-import LanguageSelector from "./components/LanguageSelector";
 import { shuffleDeck, defaultSpreads } from "./utils/tarotDeck";
-import translations from "./utils/Translations";
 
 export default function TarotApp() {
-  // Main app state
   const [question, setQuestion] = useState("");
   const [numCards, setNumCards] = useState(3);
   const [stage, setStage] = useState("welcome");
@@ -17,40 +14,28 @@ export default function TarotApp() {
   const [loading, setLoading] = useState(false);
   const [interpretation, setInterpretation] = useState("");
 
-  // Language state with persistence
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem("lang") || "en";
-  });
-
   const interpretRef = useRef(null);
   const interpretationRef = useRef(null);
 
-  // Define positions based on spread size
   const spread = {
-    positions: defaultSpreads[numCards] || Array(numCards).fill("Card"),
+    positions: defaultSpreads[numCards] || Array(numCards).fill("Card")
   };
 
-  // Wake up backend on app load
+  // Keep backend awake on Render
   useEffect(() => {
     fetch("https://taro-backend-2k9m.onrender.com/").catch(console.error);
   }, []);
 
-  // Persist language selection
-  useEffect(() => {
-    localStorage.setItem("lang", language);
-  }, [language]);
-
-  // Preload card images
+  // Preload card images once the deck is generated
   useEffect(() => {
     if (deck.length > 0) {
-      deck.forEach((card) => {
+      deck.forEach(card => {
         const img = new Image();
         img.src = `/images/cards/${card.replaceAll(" ", "_")}.jpg`;
       });
     }
   }, [deck]);
 
-  // Start a new reading
   const startReading = () => {
     setDeck(shuffleDeck());
     setDrawnCards([]);
@@ -58,12 +43,11 @@ export default function TarotApp() {
     setStage("draw");
   };
 
-  // Draw the next card
   const drawCard = () => {
-    const nextCard = deck.find((card) => !drawnCards.includes(card));
+    const nextCard = deck.find(card => !drawnCards.includes(card));
     if (!nextCard) return;
 
-    setDrawnCards((prev) => {
+    setDrawnCards(prev => {
       const updated = [...prev, nextCard];
 
       if (updated.length === numCards) {
@@ -76,7 +60,6 @@ export default function TarotApp() {
     });
   };
 
-  // Interpret the reading via backend
   const handleInterpret = async () => {
     setLoading(true);
     try {
@@ -87,9 +70,8 @@ export default function TarotApp() {
           question,
           cards: drawnCards,
           positions: spread.positions.slice(0, drawnCards.length),
-          reader: "",
-          lang: language,
-        }),
+          reader: ""
+        })
       });
 
       const data = await response.json();
@@ -99,6 +81,7 @@ export default function TarotApp() {
       setTimeout(() => {
         interpretationRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 300);
+
     } catch (err) {
       alert("Error during interpretation");
       console.error(err);
@@ -107,7 +90,6 @@ export default function TarotApp() {
     }
   };
 
-  // Reset app state
   const reset = () => {
     setStage("welcome");
     setQuestion("");
@@ -115,16 +97,8 @@ export default function TarotApp() {
     setDrawnCards([]);
   };
 
-  // Get translation object
-  const t = translations[language] || translations.en;
-
   return (
     <div className="container">
-      {/* Language selector only in welcome screen */}
-      {stage === "welcome" && (
-        <LanguageSelector selectedLang={language} onChange={setLanguage} />
-      )}
-
       {stage === "welcome" && (
         <WelcomeScreen
           question={question}
@@ -132,7 +106,6 @@ export default function TarotApp() {
           numCards={numCards}
           setNumCards={setNumCards}
           startReading={startReading}
-          language={language}
         />
       )}
 
@@ -142,12 +115,11 @@ export default function TarotApp() {
           numCards={numCards}
           drawCard={drawCard}
           interpretRef={interpretRef}
-          language={language}
         />
       )}
 
       {(stage === "draw" || stage === "result") && (
-        <CardList drawnCards={drawnCards} spread={spread} language={language} />
+        <CardList drawnCards={drawnCards} spread={spread} />
       )}
 
       {drawnCards.length === numCards && !interpretation && (
@@ -157,7 +129,7 @@ export default function TarotApp() {
           disabled={loading}
           className={loading ? "loading" : ""}
         >
-          {loading ? t.interpreting : t.interpret}
+          {loading ? "Interpreting..." : "Interpret Reading"}
         </button>
       )}
 
@@ -166,7 +138,6 @@ export default function TarotApp() {
           interpretation={interpretation}
           reset={reset}
           interpretationRef={interpretationRef}
-          language={language}
         />
       )}
     </div>

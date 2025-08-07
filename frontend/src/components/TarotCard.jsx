@@ -1,15 +1,12 @@
-import translations from "../utils/Translations";
-
-export default function TarotCard({ card, position, language }) {
-  const t = translations[language] || translations.en;
-
+export default function TarotCard({ card, position }) {
   return (
-    <div className="card-box">
-      <div className="card-title">{position}</div>
-      <img className="card-image" src={`/images/cards/${encodeURIComponent(card)}.jpg`} alt={card} />
-      <div className="card-name">
-        {t.cards?.[card] || card}
-      </div>
+    <div className="tarot-card">
+      <h4>{position}</h4>
+      <img
+        src={`/images/cards/${card.replaceAll(" ", "_")}.jpg`}
+        alt={card}
+      />
+      <p>{card}</p>
     </div>
   );
 }
