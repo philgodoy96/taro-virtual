@@ -53,7 +53,7 @@ export default function TarotApp() {
       if (updated.length === numCards) {
         setTimeout(() => {
           interpretRef.current?.scrollIntoView({ behavior: "smooth" });
-        }, 2000);
+        }, 2500);
       }
 
       return updated;
